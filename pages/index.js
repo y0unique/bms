@@ -1,59 +1,19 @@
-import { HeaderAction } from "../components/Header";
-import { Sidebar } from "../components/Sidebar";
 import {
-  AppShell,
-  Navbar,
-  Header,
-  Text,
-  Grid,
-  Title,
   Card,
-  Divider,
-  Container,
+  Divider, Grid, Text, Title
 } from "@mantine/core";
-import { useBooleanToggle } from "@mantine/hooks";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Login } from "tabler-icons-react";
 import Charts from "../components/Charts";
+import Layout from "../components/Layout";
+
 
 const Index = () => {
-  const [opened, toggleOpened] = useBooleanToggle(true);
   const { data: session } = useSession();
   return (
     <>
-      <AppShell
-        fixed={true}
-        padding="md"
-        navbar={
-          <Navbar
-            sx={{
-              overflow: "hidden",
-              transition: "width 800ms ease, min-width 1000ms ease",
-            }}
-            hidden={opened}
-            width={{  md: 300 }}
-            height="93%"
-          >
-            {<Sidebar />}
-          </Navbar>
-        }
-        navbarOffsetBreakpoint="sm"
-        header={
-          <Header height={70}>
-            {<HeaderAction opened={opened} toggleOpened={toggleOpened} />}
-          </Header>
-        }
-        styles={(theme) => ({
-          main: {
-            backgroundColor:
-              theme.colorScheme === "dark"
-                ? theme.colors.dark[8]
-                : theme.colors.gray[0],
-                transition: "padding-left 1000ms ease"
-          },
-        })}
-      >
+      <Layout>
         {!session && (
           <>
             <Grid>
@@ -162,10 +122,11 @@ const Index = () => {
           
           </>
         )}
-      </AppShell>
+      </Layout>
+      
     </>
   );
 };
 
-Login.auth = true;
+
 export default Index;
