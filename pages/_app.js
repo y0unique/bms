@@ -4,6 +4,8 @@ import { SessionProvider } from "next-auth/react";
 import { useState } from "react";
 import { ColorSchemeProvider } from "@mantine/core";
 import { useSession } from "next-auth/react";
+import { NotificationsProvider } from '@mantine/notifications';
+
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const [colorScheme, setColorScheme] = useState("light");
@@ -15,6 +17,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         <title> Barangay Management Web App </title>
       </Head>
       <SessionProvider session={session}>
+      <NotificationsProvider>
         <ColorSchemeProvider
           colorScheme={colorScheme}
           toggleColorScheme={toggleColorScheme}
@@ -38,6 +41,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
             )}
           </MantineProvider>
         </ColorSchemeProvider>
+        </NotificationsProvider>
       </SessionProvider>
     </>
   );

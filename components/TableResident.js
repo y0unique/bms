@@ -1,95 +1,119 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
-  createStyles,
-  Table,
-  Checkbox,
-  ScrollArea,
-  Group,
-  Avatar,
+  TextInput,
+  
   Text,
   Button,
-  useMantineColorScheme
+  useMantineColorScheme,
+  Group,
+  Modal,
+  ActionIcon,
+  Notification
 } from "@mantine/core";
+import { Search, RotateClockwise, Check  } from "tabler-icons-react";
+import DataTable, { createTheme } from "react-data-table-component";
+import differenceBy from 'lodash/differenceBy';
+import { showNotification } from '@mantine/notifications';
 
+const FilterComponent = ({ filterText, onFilter, onClear }) => (
+	<>
+		<TextInput
+          placeholder="Search by any field"
+          icon={<Search size={14} />}
+          value={filterText}
+			    onChange={onFilter}
+          rightSection={<ActionIcon onClick={onClear}> <RotateClockwise size={14} /> </ActionIcon>}
+        />
+	</>
+);
 
-const useStyles = createStyles((theme) => ({
-  rowSelected: {
-    backgroundColor:
-      theme.colorScheme === "dark"
-        ? theme.fn.rgba(theme.colors[theme.primaryColor][7], 0.2)
-        : theme.colors[theme.primaryColor][0],
-  },
-}));
-
-export function TableResident({ residents, selection, setSelection }) {
+export function TableResident({ data, setData, columns }) {
   const { colorScheme } = useMantineColorScheme();
-  const { classes, cx } = useStyles();
- 
+  const [opened, setOpened] = useState(false);
+  const [selectedRows, setSelectedRows] = React.useState([]);
+  const [filterText, setFilterText] = React.useState('');
+  const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
+  const [toggleCleared, setToggleCleared] = useState(false);
   
-  const toggleRow = (id) =>
-    setSelection((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : [...current, id]
-    );
-  const toggleAll = () =>
-    setSelection((current) =>
-      current.length === residents.length ? [] : residents.map((item) => item.id)
-    );
   
-  const rows = residents.map((item) => {
-    const selected = selection.includes(item.id);
-    return (
-      <tr key={item.id} className={cx({ [classes.rowSelected]: selected })}>
-        <td>
-          <Checkbox
-            checked={selection.includes(item.id)}
-            onChange={() => toggleRow(item.id)}
-            transitionDuration={0}
-          />
-        </td>
-        <td>
-          <Group spacing="sm">
-            <Avatar size={26} src={item.avatar} radius={26} />
-            <Text size="sm" weight={500}>
-              {item.name}
-            </Text>
-          </Group>
-        </td>
-        <td>{item.email}</td>
-        <td>{item.job}</td>
-        <td>{item.address}</td>
-        <td>
-          <Button color={colorScheme}  radius="xl">Edit</Button>   
-        </td>
-      </tr>
-    );
-  });
+  const filteredItems = data.filter(
+		item => item.firstname && item.firstname.toLowerCase().includes(filterText.toLowerCase()),
+	);
 
+  const handleRowSelected = React.useCallback(state => {
+		setSelectedRows(state.selectedRows);
+	}, []);
+
+  const handleDelete = () => {
+    showNotification({
+      title: 'Delete Resident',
+      message: 'Data Deleted Successfully ',
+      icon: <Check />,
+      color: "teal",
+    })
+     setToggleCleared(!toggleCleared);
+     setData(differenceBy(data, selectedRows, 'name'));
+  };
+  const subHeaderComponentMemo = useMemo(() => {
+		const handleClear = () => {
+			if (filterText) {
+				setResetPaginationToggle(!resetPaginationToggle);
+				setFilterText('');
+			}
+		};
+		return (
+			<FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} />
+		);
+	}, [filterText, resetPaginationToggle]);
+
+
+  createTheme("theme", {
+    text: {
+      primary: colorScheme,
+      secondary: colorScheme,
+    },
+    background: {
+      default: colorScheme,
+    },
+    sortFocus: {
+      default: colorScheme === "light" ? "#00000" : "#ffffff",
+    },
+    divider: {
+      default: colorScheme === "light" ? "#e9ecef" : "#dee2e6",
+    },
+  });
+ 
   return (
-    <ScrollArea>
-      <Table sx={{ minWidth: 800 }} verticalSpacing="sm">
-        <thead>
-          <tr>
-            <th style={{ width: 40 }}>
-              <Checkbox
-                onChange={toggleAll}
-                checked={selection.length === residents.length}
-                indeterminate={
-                  selection.length > 0 && selection.length !== residents.length
-                }
-                transitionDuration={0}
-              />
-            </th>
-            <th>Name</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Address</th>
-            <th>Option</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </Table>
-    </ScrollArea>
+    <>
+      <Group position="right" mb={10}>
+        <Modal
+          opened={opened}
+          onClose={() => setOpened(false)}
+          title="Add Resident Records"
+          centered
+        >
+          {/* Modal content */}
+        </Modal>
+
+        <Button onClick={() => setOpened(true)} variant="light">
+          Add Records
+        </Button>
+        <Button onClick={() => handleDelete()} variant="light" color="red">
+          Delete
+        </Button>
+      </Group>
+
+      <DataTable
+        columns={columns}
+        data={filteredItems}
+        theme="theme"
+        pagination
+        selectableRows
+        subHeader
+        subHeaderComponent={subHeaderComponentMemo}
+        onSelectedRowsChange={handleRowSelected}
+        clearSelectedRows={toggleCleared}
+      />
+    </>
   );
 }
