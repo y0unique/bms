@@ -11,7 +11,8 @@ export default async (req, res) => {
     const client = await clientPromise;
     const db = client.db("barangayDB");
     const collection = db.collection("resident");
-    const residents = await collection.find({}).toArray();
+    // filter document with active status 
+    const residents = await collection.find({ status: "active" }).toArray();
     return res.json(residents);
 
 }
