@@ -123,7 +123,10 @@ export function Sidebar() {
           <span>Settings</span>
         </a>
 
-        <a href="#" className={classes.link} onClick={(event) => {event.preventDefault();  signOut()}}>
+        <a href="#" className={classes.link} onClick={(event) => {
+          event.preventDefault(); 
+           signOut({ callbackUrl: "/auth/login" })
+           }}>
           <Logout className={classes.linkIcon} />
           <span>Logout</span>
         </a>

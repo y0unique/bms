@@ -30,7 +30,7 @@ export default async (req, res) => {
             middlename: req.body.middlename,    
             lastname: req.body.lastname,
             address: req.body.address,
-            age: req.body.age,
+            birthdate: req.body.birthdate,
             gender: req.body.gender,
             residencyDate: req.body.residencyDate,
             status: "active"

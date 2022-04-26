@@ -23,7 +23,7 @@ const Login = () => {
     if (res.error) {
       setError(res.error);
     } 
-    if  (res.ok) {
+    else if  (res.ok) {
       router.push("/");
     }
   }
