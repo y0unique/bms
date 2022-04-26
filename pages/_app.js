@@ -25,7 +25,8 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
           <MantineProvider
             theme={{
               // Override any other properties from default theme
-              fontFamily: "Open Sans, Helvetica",
+              fontFamily: 'sans-serif',
+              headings: { fontFamily: 'Greycliff CF, sans-serif' },
               spacing: { xs: 15, sm: 20, md: 25, lg: 30, xl: 40 },
               colorScheme: colorScheme,
              

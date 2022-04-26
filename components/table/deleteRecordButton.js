@@ -12,7 +12,7 @@ const DeleteRecordButton = ( {selectedRows , toggleCleared, setToggleCleared, da
         // Put all ids in an array
         const ids = selectedRows.map(row => row._id);
     
-        const result = await fetch('/api/deleteResident', {
+        const result = await fetch('/api/resident/deleteResident', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

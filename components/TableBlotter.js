@@ -1,17 +1,9 @@
-import React, { useState, useMemo } from "react";
 import {
-  TextInput,
-  Text,
-  Button,
-  useMantineColorScheme,
-  Group,
-  Modal,
-  ActionIcon,
-  Checkbox
+    ActionIcon, Group, TextInput, useMantineColorScheme, Checkbox 
 } from "@mantine/core";
-import { Search, RotateClockwise, Check } from "tabler-icons-react";
+import React, { useCallback, useMemo, useState } from "react";
 import DataTable, { createTheme } from "react-data-table-component";
-import { useCallback } from "react";
+import { RotateClockwise, Search } from "tabler-icons-react";
 
 
 const FilterComponent = ({ filterText, onFilter, onClear }) => (
@@ -26,7 +18,7 @@ const FilterComponent = ({ filterText, onFilter, onClear }) => (
   </>
 );
 
-export function TableResident({ data, columns, toggleCleared, setSelectedRows, setToggleCleared }) {
+export function TableBlotter({ data, columns, toggleCleared, setSelectedRows, setToggleCleared }) {
   const { colorScheme } = useMantineColorScheme();
   const [filterText, setFilterText] = React.useState('');
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
@@ -73,13 +65,7 @@ export function TableResident({ data, columns, toggleCleared, setSelectedRows, s
 
   return (
     <>
-      <Group position="right" mb={10}>
-
-        
-       
-      
-
-       
+      <Group position="right" mb={10}>  
       </Group>
 
       <DataTable

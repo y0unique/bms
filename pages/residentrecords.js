@@ -1,22 +1,17 @@
-import Layout from "../components/Layout";
 import {
-  Card,
-  Avatar,
-  Button,
-  Group,
-  Grid,
-  Text,
-  Title,
-  TextInput,
+  Card, Grid, Group, Text,
+  Title
 } from "@mantine/core";
-import Link from "next/link";
-import { useSession, getSession } from "next-auth/react";
-import { useState, useEffect } from "react";
-import useSWR from 'swr'
-import { TableResident } from "../components/TableResident";
-import EditRecordButton from "../components/editRecordButton";
-import AddRecordButton from "../components/addRecordButton";
 import moment from "moment";
+import { getSession, useSession } from "next-auth/react";
+import Link from "next/link";
+import { useState } from "react";
+import useSWR from "swr";
+import Layout from "../components/Layout";
+import AddRecordButton from "../components/table/addRecordButton";
+import DeleteRecordButton from "../components/table/deleteRecordButton";
+import EditRecordButton from "../components/table/editRecordButton";
+import { TableResident } from "../components/TableResident";
 
 const columns = [
   {
@@ -25,12 +20,12 @@ const columns = [
   },
   {
     name: <Text> Age </Text>,
-    cell: (row) =>{ 
+    cell: (row) => {
       const now = moment();
       const birth = moment(row.birthdate);
-      const diff =  now.diff(birth, 'years');
+      const diff = now.diff(birth, "years");
       return diff;
-  },
+    },
     // cell: (row) => moment(row.birthdate).format('YYYY-MM-DD'),
   },
   {
@@ -43,7 +38,7 @@ const columns = [
   },
   {
     name: <Text> Residency Date </Text>,
-    cell: (row) => moment(row.residencyDate).format('MM-DD-YYYY'),
+    cell: (row) => moment(row.residencyDate).format("MM-DD-YYYY"),
   },
   {
     name: <Text> Action </Text>,
@@ -51,30 +46,19 @@ const columns = [
   },
 ];
 
-const fetcher = (url) => fetch(url).then((r) => r.json());
-
 const ResidentRecords = () => {
-  // const fetcher = async () => {
-  //   const response = await fetch("/api/getResidents")
-  //   const data = await response.json();
-  //   return data;
-  // }
-  // const { res, error } = useSWR('/api/getResidents', fetcher)
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const [resident, setResident] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [toggleCleared, setToggleCleared] = useState(false);
 
   const { data: session } = useSession();
-  // const [resident, setResident] = useState(data);
-  
-  // useEffect(() => {
-  //   setResident(res);
-  // }, [res])
- 
-  const { data } = useSWR('/api/getResidents', apiURL => fetch(apiURL).then(res => res.json()));
-  const [resident, setResident] = useState(data);
-  
-  useEffect(() => {
-    setResident(data);
-  }, [data])
-  
+  const { data, error } = useSWR("/api/resident/getResidents", fetcher, {
+    refreshInterval: 500,
+  });
+  if (error) return <div>Failed to load</div>;
+  if (!data) return <div>Loading...</div>;
+
   return (
     <Layout>
       {!session && (
@@ -89,19 +73,33 @@ const ResidentRecords = () => {
           </Grid>
         </>
       )}
-      {session && (
+      {session && data && (
         <>
           <Grid mt={12}>
             <Grid.Col span={12}>
               <Card>
-                <Title mb={6}>Resident Records</Title>
+                <Title mb={6} >Resident Records</Title>
+               
+                <Group> 
                 <AddRecordButton />
-                 <TableResident
-                  data={resident}    
-                  setData={setResident} 
+                <DeleteRecordButton
+                  selectedRows={selectedRows}
+                  data={data}
+                  setData={setResident}
+                  setSelectedRows={setSelectedRows}
+                  toggleCleared={toggleCleared}
+                  setToggleCleared={setToggleCleared}
+                />
+                </Group>
+                
+                <TableResident
+                  data={data}
+                  setData={setResident}
                   columns={columns}
-                /> 
-             
+                  setSelectedRows={setSelectedRows}
+                  toggleCleared={toggleCleared}
+                  setToggleCleared={setToggleCleared}
+                />
               </Card>
             </Grid.Col>
           </Grid>
@@ -114,25 +112,18 @@ const ResidentRecords = () => {
 export default ResidentRecords;
 
 export async function getServerSideProps(context) {
-  const session = await getSession(context)
+  const session = await getSession(context);
   if (!session) {
     return {
       redirect: {
-        destination: '/auth/login',
+        destination: "/auth/login",
         permanent: false,
       },
-    }
+    };
   }
-
-  // fetch data from getResidents.js
-  const response = await fetch('http://localhost:3000/api/getResidents', {
-      headers: {
-        cookie: context.req.headers.cookie || "",
-      },
-    });
-    const data = await response.json();
-    console.log(data);
   return {
-    props: { data }, // will be passed to the page component as props
+    props: {
+      session,
+    },
   };
 }

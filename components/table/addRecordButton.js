@@ -1,72 +1,60 @@
-import { Button, Modal, Grid, Group, TextInput, NumberInput, Select } from "@mantine/core";
-import  { useState } from "react";
+import {
+    Grid,
+    Modal,
+    NumberInput,
+    Select,
+    TextInput,
+    Group,
+    Button,
+    useMantineColorScheme,
+} from "@mantine/core";
+import { DatePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
-import { DatePicker } from '@mantine/dates';
 import { Check } from "tabler-icons-react";
+import  { useState } from "react";
 
-const EditRecordButton = ({id})  => {
+const AddRecordButton = () => {
+    const { colorScheme } = useMantineColorScheme();
     const [opened, setOpened] = useState(false);
-  
-
-    
-      const form = useForm({
+    const form = useForm({
         initialValues: {
             firstname: "",
-            middlename:  "",
-            lastname:"",
-            address:  "",
-            age:  "",
-            gender:  "",
-            residencyDate:  "",
+            middlename: "",
+            lastname: "",
+            address: "",
+            birthdate: "",
+            gender: "Male",
+            date: "01/01/2022",
         },
     });
 
 
-    return ( 
-        <><Button variant="outline" radius="xl" onClick={ async() => {
-            setOpened(true);
-            const result = await fetch('/api/findResident', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({id: id}),
-            }).then(response => response.json());
-            form.setValues({
-                firstname: result.firstname,
-                middlename: result.middlename,
-                lastname: result.lastname,
-                address: result.address,
-                birthdate: new Date(result.birthdate),
-                gender: result.gender === "Male" ? "male" : "female" ,
-                residencyDate: new Date(result.residencyDate)
-            })
-            }}>Edit</Button>
+    return (
+        <><Button onClick={() => setOpened(true) } variant="light">
+            Add Records
+        </Button>
         <Modal
             opened={opened}
             onClose={() => setOpened(false)}
-            title="Edit Resident Record"
+            title="Add Resident Records"
             centered
             size="lg"
         >
-            {<form onSubmit={form.onSubmit(async (values) => {
-                    const result = await fetch('/api/updateResident', {
+                {<form onSubmit={form.onSubmit(async (values) => {
+                    const result = await fetch('/api/resident/addResident', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({
-                            id: id,
-                            ...values,
-                        }),
+                        body: JSON.stringify(values),
                     }).then(response => response.json());
 
                     //If result message is success, then show notification
-                    if (result.acknowledged === true) {
+                    if (result.message.acknowledged === true) {
                         showNotification({
-                            title: 'Updated Resident',
-                            message: 'Updated Data Successfully ',
+                            title: 'Added Resident',
+                            message: 'Added Successfully ',
                             icon: <Check />,
                             color: "teal",
                         });
@@ -141,9 +129,8 @@ const EditRecordButton = ({id})  => {
                         <Button type="submit">Submit</Button>
                     </Group>
                 </form>}
-        </Modal></>
-        
-     );
+            </Modal></>
+    );
 }
- 
-export default EditRecordButton;
+
+export default AddRecordButton;

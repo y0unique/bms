@@ -2,9 +2,8 @@ import {
   Card,
   Divider, Grid, Text, Title
 } from "@mantine/core";
-import { useSession, getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
-import { Login } from "tabler-icons-react";
 import Charts from "../components/Charts";
 import Layout from "../components/Layout";
 

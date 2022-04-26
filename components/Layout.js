@@ -27,7 +27,7 @@ const Layout = ({children}) => {
             }}
             hidden={opened}
             width={{  md: 300 }}
-            height="93%"
+            height={600}
           >
             {<Sidebar />}
           </Navbar>
