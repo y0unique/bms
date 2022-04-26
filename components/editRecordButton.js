@@ -1,60 +1,72 @@
-import {
-    Grid,
-    Modal,
-    NumberInput,
-    Select,
-    TextInput,
-    Group,
-    Button,
-    useMantineColorScheme,
-} from "@mantine/core";
-import { DatePicker } from '@mantine/dates';
+import { Button, Modal, Grid, Group, TextInput, NumberInput, Select } from "@mantine/core";
+import  { useState } from "react";
 import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
+import { DatePicker } from '@mantine/dates';
 import { Check } from "tabler-icons-react";
-import  { useState } from "react";
 
-const AddRecordButton = () => {
-    const { colorScheme } = useMantineColorScheme();
+const EditRecordButton = ({id})  => {
     const [opened, setOpened] = useState(false);
-    const form = useForm({
+  
+
+    
+      const form = useForm({
         initialValues: {
             firstname: "",
-            middlename: "",
-            lastname: "",
-            address: "",
-            birthdate: "",
-            gender: "Male",
-            date: "01/01/2022",
+            middlename:  "",
+            lastname:"",
+            address:  "",
+            age:  "",
+            gender:  "",
+            residencyDate:  "",
         },
     });
 
 
-    return (
-        <><Button onClick={() => setOpened(true) } variant="light">
-            Add Records
-        </Button>
+    return ( 
+        <><Button variant="outline" radius="xl" onClick={ async() => {
+            setOpened(true);
+            const result = await fetch('/api/findResident', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({id: id}),
+            }).then(response => response.json());
+            form.setValues({
+                firstname: result.firstname,
+                middlename: result.middlename,
+                lastname: result.lastname,
+                address: result.address,
+                birthdate: new Date(result.birthdate),
+                gender: result.gender === "Male" ? "male" : "female" ,
+                residencyDate: new Date(result.residencyDate)
+            })
+            }}>Edit</Button>
         <Modal
             opened={opened}
             onClose={() => setOpened(false)}
-            title="Add Resident Records"
+            title="Edit Resident Record"
             centered
             size="lg"
         >
-                {<form onSubmit={form.onSubmit(async (values) => {
-                    const result = await fetch('/api/addResident', {
+            {<form onSubmit={form.onSubmit(async (values) => {
+                    const result = await fetch('/api/updateResident', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify(values),
+                        body: JSON.stringify({
+                            id: id,
+                            ...values,
+                        }),
                     }).then(response => response.json());
 
                     //If result message is success, then show notification
-                    if (result.message.acknowledged === true) {
+                    if (result.acknowledged === true) {
                         showNotification({
-                            title: 'Added Resident',
-                            message: 'Added Successfully ',
+                            title: 'Updated Resident',
+                            message: 'Updated Data Successfully ',
                             icon: <Check />,
                             color: "teal",
                         });
@@ -129,8 +141,9 @@ const AddRecordButton = () => {
                         <Button type="submit">Submit</Button>
                     </Group>
                 </form>}
-            </Modal></>
-    );
+        </Modal></>
+        
+     );
 }
-
-export default AddRecordButton;
+ 
+export default EditRecordButton;

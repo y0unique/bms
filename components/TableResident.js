@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { Search, RotateClockwise, Check } from "tabler-icons-react";
 import DataTable, { createTheme } from "react-data-table-component";
-import AddRecordButton from "./addRecordButton";
+
 import DeleteRecordButton from "./deleteRecordButton";
 
 const FilterComponent = ({ filterText, onFilter, onClear }) => (
@@ -67,7 +67,7 @@ export function TableResident({ data, setData, columns }) {
       default: colorScheme === "light" ? "#00000" : "#ffffff",
     },
     divider: {
-      default: colorScheme === "light" ? "#e9ecef" : "#dee2e6",
+      default: colorScheme === "light" ? "#e9ecef" : "#373A40",
     },
   });
 
@@ -76,7 +76,7 @@ export function TableResident({ data, setData, columns }) {
     <>
       <Group position="right" mb={10}>
 
-        <AddRecordButton />
+        
         <DeleteRecordButton selectedRows={selectedRows} data={data} setData={setData} toggleCleared={toggleCleared} setToggleCleared={setToggleCleared}/>
       
 

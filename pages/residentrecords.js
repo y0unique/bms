@@ -10,23 +10,28 @@ import {
   TextInput,
 } from "@mantine/core";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useSession, getSession } from "next-auth/react";
+import { useState, useEffect } from "react";
+import useSWR from 'swr'
 import { TableResident } from "../components/TableResident";
-import { useState } from "react";
-
+import EditRecordButton from "../components/editRecordButton";
+import AddRecordButton from "../components/addRecordButton";
+import moment from "moment";
 
 const columns = [
-  {
-    name: <Text> Picture </Text>,
-    cell: (row) => <Avatar size={26} src={row.avatar} radius={26} />,
-  },
   {
     name: <Text> Name </Text>,
     cell: (row) => row.firstname + " " + row.middlename + " " + row.lastname,
   },
   {
     name: <Text> Age </Text>,
-    cell: (row) => row.age,
+    cell: (row) =>{ 
+      const now = moment();
+      const birth = moment(row.birthdate);
+      const diff =  now.diff(birth, 'years');
+      return diff;
+  },
+    // cell: (row) => moment(row.birthdate).format('YYYY-MM-DD'),
   },
   {
     name: <Text> Gender </Text>,
@@ -38,14 +43,38 @@ const columns = [
   },
   {
     name: <Text> Residency Date </Text>,
-    cell: (row) => row.residencyDate,
+    cell: (row) => moment(row.residencyDate).format('MM-DD-YYYY'),
+  },
+  {
+    name: <Text> Action </Text>,
+    cell: (row) => <EditRecordButton id={row._id}>Edit</EditRecordButton>,
   },
 ];
 
+const fetcher = (url) => fetch(url).then((r) => r.json());
 
-const ResidentRecords = ({ data }) => {
+const ResidentRecords = () => {
+  // const fetcher = async () => {
+  //   const response = await fetch("/api/getResidents")
+  //   const data = await response.json();
+  //   return data;
+  // }
+  // const { res, error } = useSWR('/api/getResidents', fetcher)
+
   const { data: session } = useSession();
+  // const [resident, setResident] = useState(data);
+  
+  // useEffect(() => {
+  //   setResident(res);
+  // }, [res])
+ 
+  const { data } = useSWR('/api/getResidents', apiURL => fetch(apiURL).then(res => res.json()));
   const [resident, setResident] = useState(data);
+  
+  useEffect(() => {
+    setResident(data);
+  }, [data])
+  
   return (
     <Layout>
       {!session && (
@@ -66,7 +95,7 @@ const ResidentRecords = ({ data }) => {
             <Grid.Col span={12}>
               <Card>
                 <Title mb={6}>Resident Records</Title>
-               
+                <AddRecordButton />
                  <TableResident
                   data={resident}    
                   setData={setResident} 
@@ -85,8 +114,18 @@ const ResidentRecords = ({ data }) => {
 export default ResidentRecords;
 
 export async function getServerSideProps(context) {
+  const session = await getSession(context)
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      },
+    }
+  }
+
   // fetch data from getResidents.js
-  const response = await fetch("http://localhost:3000/api/getResidents", {
+  const response = await fetch('http://localhost:3000/api/getResidents', {
       headers: {
         cookie: context.req.headers.cookie || "",
       },
