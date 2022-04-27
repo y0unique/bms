@@ -7,25 +7,39 @@ import {
     Group,
     Button,
     useMantineColorScheme,
+    LoadingOverlay
 } from "@mantine/core";
 import { DatePicker } from '@mantine/dates';
-import { useForm } from '@mantine/form';
+import { useForm, zodResolver } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import { Check } from "tabler-icons-react";
 import  { useState } from "react";
+import { z } from 'zod';
+
+const schema = z.object({
+    firstname: z.string().min(1, { message: 'Name could not be empty' }),
+    middlename: z.string().optional(),
+    lastname: z.string().min(1, { message: 'Lastname could not be empty' }),
+    address: z.string().min(1, { message: 'Address could not be empty' }),
+    birthdate: z.date(),
+    gender: z.enum(["male","female"]),
+    residencyDate: z.date(),
+  });
 
 const AddRecordButton = () => {
     const { colorScheme } = useMantineColorScheme();
     const [opened, setOpened] = useState(false);
+    const [visible, setVisible] = useState(false);
     const form = useForm({
+        schema: zodResolver(schema),
         initialValues: {
             firstname: "",
             middlename: "",
             lastname: "",
             address: "",
             birthdate: "",
-            gender: "Male",
-            date: "01/01/2022",
+            gender: "",
+            residencyDate: "",
         },
     });
 
@@ -41,13 +55,19 @@ const AddRecordButton = () => {
             centered
             size="lg"
         >
-                {<form onSubmit={form.onSubmit(async (values) => {
-                    const result = await fetch('/api/resident/addResident', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(values),
+            <div style={{ position: 'relative' }}>
+                <LoadingOverlay visible={visible} />
+              
+            
+                {<form onSubmit={
+                    form.onSubmit(async (values) => {
+                        setVisible((v) => !v);
+                        const result = await fetch('/api/resident/addResident', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(values),
                     }).then(response => response.json());
 
                     //If result message is success, then show notification
@@ -129,6 +149,7 @@ const AddRecordButton = () => {
                         <Button type="submit">Submit</Button>
                     </Group>
                 </form>}
+                </div>
             </Modal></>
     );
 }
