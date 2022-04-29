@@ -48,6 +48,10 @@ const links = [
     link: "/announcement",
     label: "Announcement",
   },
+  {
+    link: "/Chats",
+    label: "Chat",
+  },
 ];
 const HEADER_HEIGHT = 60;
 
