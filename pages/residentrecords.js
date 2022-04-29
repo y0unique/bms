@@ -15,11 +15,11 @@ import { TableResident } from "../components/TableResident";
 
 const columns = [
   {
-    name: <Text> Name </Text>,
+    name: <th> Name </th>,
     cell: (row) => row.firstname + " " + row.middlename + " " + row.lastname,
   },
   {
-    name: <Text> Age </Text>,
+    name: <th> Age </th>,
     cell: (row) => {
       const now = moment();
       const birth = moment(row.birthdate);
@@ -29,19 +29,19 @@ const columns = [
     // cell: (row) => moment(row.birthdate).format('YYYY-MM-DD'),
   },
   {
-    name: <Text> Gender </Text>,
+    name: <th> Gender </th>,
     cell: (row) => row.gender,
   },
   {
-    name: <Text> Address </Text>,
+    name: <th> Address </th>,
     cell: (row) => row.address,
   },
   {
-    name: <Text> Residency Date </Text>,
+    name: <th> Residency Date </th>,
     cell: (row) => moment(row.residencyDate).format("MM-DD-YYYY"),
   },
   {
-    name: <Text> Action </Text>,
+    name: <th> Action </th>,
     cell: (row) => <EditRecordButton id={row._id}>Edit</EditRecordButton>,
   },
 ];

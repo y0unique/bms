@@ -53,7 +53,7 @@ export function TableResident({ data, columns, toggleCleared, setSelectedRows, s
     );
   }, [filterText, resetPaginationToggle]);
 
-
+  console.log(colorScheme);
   createTheme("theme", {
     text: {
       primary: colorScheme,
@@ -63,10 +63,10 @@ export function TableResident({ data, columns, toggleCleared, setSelectedRows, s
       default: colorScheme,
     },
     sortFocus: {
-      default: colorScheme === "light" ? "#00000" : "#ffffff",
+      default: colorScheme === "dark" ? "#00000" : "#ffffff",
     },
     divider: {
-      default: colorScheme === "light" ? "#e9ecef" : "#373A40",
+      default: colorScheme === "dark" ? "#e9ecef" : "#373a40"
     },
   });
 

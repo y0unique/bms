@@ -17,9 +17,11 @@ export default async (req, res) => {
         // Check if one of the fields is empty
         if (
             req.body.firstname === "" ||
-            req.body.middlename === "" ||
             req.body.lastname === "" ||
-            req.body.address === ""
+            req.body.address === "" || 
+            req.body.birthdate === "" ||
+            req.body.residencyDate === "" ||
+            req.body.gender === "" 
         ) {
             res.statusCode = 400;
             res.json({ message: "One of the fields is empty." });

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ColorSchemeProvider } from "@mantine/core";
 import { useSession } from "next-auth/react";
 import { NotificationsProvider } from '@mantine/notifications';
-
+import Fonts from '../components/Fonts';
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const [colorScheme, setColorScheme] = useState("light");
@@ -16,32 +16,37 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <Head>
         <title> Barangay Management Web App </title>
       </Head>
+
+      <Fonts/>
+
       <SessionProvider session={session}>
-      <NotificationsProvider>
-        <ColorSchemeProvider
-          colorScheme={colorScheme}
-          toggleColorScheme={toggleColorScheme}
-        >
-          <MantineProvider
-            theme={{
-              // Override any other properties from default theme
-              fontFamily: 'sans-serif',
-              headings: { fontFamily: 'Greycliff CF, sans-serif' },
-              spacing: { xs: 15, sm: 20, md: 25, lg: 30, xl: 40 },
-              colorScheme: colorScheme,
-             
-            }}
-            withGlobalStyles
+        <NotificationsProvider>
+          <ColorSchemeProvider
+            colorScheme={colorScheme}
+            toggleColorScheme={toggleColorScheme}
           >
-            {Component.auth ? (
-              <Auth>
+            
+            <MantineProvider
+              theme={{
+                // Override any other properties from default theme
+                fontFamily: 'sans-serif',
+                fontFamilyMonospace: 'Monaco, Courier, monospace',
+                headings: { fontFamily: 'Greycliff CF, sans-serif' },
+                spacing: { xs: 15, sm: 20, md: 25, lg: 30, xl: 40 },
+                colorScheme: colorScheme,
+
+              }}
+              withGlobalStyles
+            >
+              {Component.auth ? (
+                <Auth>
+                  <Component {...pageProps} />
+                </Auth>
+              ) : (
                 <Component {...pageProps} />
-              </Auth>
-            ) : (
-              <Component {...pageProps} />
-            )}
-          </MantineProvider>
-        </ColorSchemeProvider>
+              )}
+            </MantineProvider>
+          </ColorSchemeProvider>
         </NotificationsProvider>
       </SessionProvider>
     </>
