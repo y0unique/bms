@@ -1,61 +1,100 @@
-import {
-  Card, Grid, Group, Text,
-  Title
-} from "@mantine/core";
-import moment from "moment";
+import { Card, Grid, Group, Text, Title } from "@mantine/core";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
-import Layout from "../components/Layout";
-import AddRecordButton from "../components/table/addRecordButton";
-import DeleteRecordButton from "../components/table/deleteRecordButton";
-import EditRecordButton from "../components/table/editRecordButton";
-import { TableResident } from "../components/TableResident";
+import moment from "moment";
+import { z } from "zod";
 
-const columns = [
-  {
-    name: <th> Name </th>,
-    cell: (row) => row.firstname + " " + row.middlename + " " + row.lastname,
-  },
-  {
-    name: <th> Age </th>,
-    cell: (row) => {
-      const now = moment();
-      const birth = moment(row.birthdate);
-      const diff = now.diff(birth, "years");
-      return diff;
-    },
-    // cell: (row) => moment(row.birthdate).format('YYYY-MM-DD'),
-  },
-  {
-    name: <th> Gender </th>,
-    cell: (row) => row.gender,
-  },
-  {
-    name: <th> Address </th>,
-    cell: (row) => row.address,
-  },
-  {
-    name: <th> Residency Date </th>,
-    cell: (row) => moment(row.residencyDate).format("MM-DD-YYYY"),
-  },
-  {
-    name: <th> Action </th>,
-    cell: (row) => <EditRecordButton id={row._id}>Edit</EditRecordButton>,
-  },
-];
+import Layout from "../components/Layout";
+import Add from "../components/table/buttons/Add";
+import Delete from "../components/table/buttons/Delete";
+import Edit from "../components/table/buttons/Edit";
+import ReactTable from "../components/table/ReactTable";
+
+import ResidentModal from "../components/table/modals/ResidentModal";
 
 const ResidentRecords = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
-  const [resident, setResident] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [toggleCleared, setToggleCleared] = useState(false);
+  const [selectedID, setSelectedID] = useState("");
+
+  const schema = z.object({
+    firstname: z.string().min(1, { message: "Name could not be empty" }),
+    middlename: z.string().default("test"),
+    lastname: z.string().min(1, { message: "Lastname could not be empty" }),
+    address: z.string().min(1, { message: "Address could not be empty" }),
+    birthdate: z.date(),
+    gender: z.enum(["male", "female"]),
+    residencyDate: z.date(),
+  });
+
+  const initialValues = {
+    firstname: "",
+    middlename: "",
+    lastname: "",
+    address: "",
+    birthdate: "",
+    gender: "",
+    residencyDate: "",
+  };
+
+  const columns = [
+    {
+      Header: "Name",
+      accessor: "firstname",
+      Cell: (props) => {
+        return `${props.row.original.firstname} ${props.row.original.middlename}
+       ${props.row.original.lastname}`;
+      },
+    },
+    {
+      Header: "Age",
+      accessor: "age",
+      Cell: (props) => {
+        const now = moment();
+        const birth = moment(props.row.original.birthdate);
+        const diff = now.diff(birth, "years");
+        return diff;
+      },
+    },
+    {
+      Header: "Address",
+      accessor: "address",
+    },
+    {
+      Header: "Residency Date",
+      accessor: "residencyDate",
+      Cell: (props) => {
+        return moment(props.row.original.residencyDate).format("MM-DD-YYYY");
+      },
+    },
+    {
+      Header: "Action",
+      accessor: "action",
+      Cell: (props) => {
+        // Convert strings to dates to render in modal
+        props.row.original.birthdate = new Date(props.row.original.birthdate);
+        props.row.original.residencyDate = new Date(
+          props.row.original.residencyDate
+        );
+        return (
+          <Edit
+            data={props.row.original}
+            schema={schema}
+            title="Resident"
+            endpoint="/api/resident/updateResident"
+            child={<ResidentModal />}
+          />
+        );
+      },
+    },
+  ];
 
   const { data: session } = useSession();
   const { data, error } = useSWR("/api/resident/getResidents", fetcher, {
     refreshInterval: 500,
   });
+
   if (error) return <div>Failed to load</div>;
   if (!data) return <div>Loading...</div>;
 
@@ -78,27 +117,27 @@ const ResidentRecords = () => {
           <Grid mt={12}>
             <Grid.Col span={12}>
               <Card>
-                <Title mb={6} >Resident Records</Title>
-               
-                <Group> 
-                <AddRecordButton />
-                <DeleteRecordButton
-                  selectedRows={selectedRows}
-                  data={data}
-                  setData={setResident}
-                  setSelectedRows={setSelectedRows}
-                  toggleCleared={toggleCleared}
-                  setToggleCleared={setToggleCleared}
-                />
+                <Title mb={6}>Resident Records</Title>
+
+                <Group>
+                  <Add
+                    title="Resident"
+                    schema={schema}
+                    endpoint="/api/resident/addResident"
+                    initialValues={initialValues}
+                  />
+                  <Delete
+                    selectedID={selectedID}
+                    title="Resident"
+                    endpoint="/api/resident/deleteResident"
+                  />
                 </Group>
-                
-                <TableResident
+
+                <ReactTable
                   data={data}
-                  setData={setResident}
-                  columns={columns}
-                  setSelectedRows={setSelectedRows}
-                  toggleCleared={toggleCleared}
-                  setToggleCleared={setToggleCleared}
+                  cols={columns}
+                  schema={schema}
+                  setSelectedID={setSelectedID}
                 />
               </Card>
             </Grid.Col>

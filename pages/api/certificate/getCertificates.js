@@ -10,18 +10,18 @@ export default async (req, res) => {
     }
     const client = await clientPromise;
     const db = client.db("barangayDB");
-    const collection = db.collection("resident");
+    const collection = db.collection("documents");
     // filter document with active status 
-    const residents = await collection.find({ status: "active" }).toArray();
+    const documents = await collection.find({ status: "active" }).toArray();
     // If there is error, return error message
-    if (residents.length === 0) {
+    if (documents.length === 0) {
         res.statusCode = 404;
-        res.json({ message: "No resident record found." });
+        res.json({ message: "No document record found." });
         return;
     }
     // If there is no error, return the data
     res.statusCode = 200;
-    return res.json(residents);
+    return res.json(documents);
 
    
 
