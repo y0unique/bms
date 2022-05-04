@@ -12,30 +12,26 @@ import Delete from "../components/table/buttons/Delete";
 import Edit from "../components/table/buttons/Edit";
 import ReactTable from "../components/table/ReactTable";
 
-import ResidentModal from "../components/table/modals/ResidentModal";
+import InquiriesModal from "../components/table/modals/InquiriesModal";
 
-const ResidentRecords = () => {
+const InquiriesRecords = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const [selectedID, setSelectedID] = useState("");
 
   const schema = z.object({
-    firstname: z.string().min(1, { message: "Name could not be empty" }),
-    middlename: z.string().default("test"),
-    lastname: z.string().min(1, { message: "Lastname could not be empty" }),
-    address: z.string().min(1, { message: "Address could not be empty" }),
-    birthdate: z.date(),
-    gender: z.enum(["male", "female"]),
-    residencyDate: z.date(),
+    purpose: z.string().min(1, { message: "Purpose could not be empty" }),
+    report: z.string().min(1, { message: "Report could not be empty" }),
+    status: z.string().min(1, { message: "Status could not be empty" }),
+    type: z.enum(["Barangay Certificate", "Certificate of Indigency"]),
+    dateInquired: z.date(),
   });
 
   const initialValues = {
-    firstname: "",
-    middlename: "",
-    lastname: "",
-    address: "",
-    birthdate: "",
-    gender: "",
-    residencyDate: "",
+    purpose: "",
+    report: "",
+    status: "",
+    type: "",
+    dateInquired: "",
   };
 
   const columns = [
@@ -58,17 +54,17 @@ const ResidentRecords = () => {
       accessor: "action",
       Cell: (props) => {
         // Convert strings to dates to render in modal
-        props.row.original.birthdate = new Date(props.row.original.birthdate);
-        props.row.original.residencyDate = new Date(
-          props.row.original.residencyDate
+        props.row.original.dateInquired = new Date(props.row.original.dateInquired);
+        props.row.original.dateInquired = new Date(
+          props.row.original.dateInquired
         );
         return (
           <Edit
             data={props.row.original}
             schema={schema}
-            title="Resident"
-            endpoint="/api/resident/updateResident"
-            child={<ResidentModal />}
+            title="Inquiries"
+            endpoint="/api/inquiries/updateInquiries"
+            child={<InquiriesModal />}
           />
         );
       },
@@ -76,7 +72,7 @@ const ResidentRecords = () => {
   ];
 
   const { data: session } = useSession();
-  const { data, error } = useSWR("/api/certificate/getCertificates", fetcher, {
+  const { data, error } = useSWR("/api/inquiries/getInquiries", fetcher, {
     refreshInterval: 500,
   });
 
@@ -102,19 +98,19 @@ const ResidentRecords = () => {
           <Grid mt={12}>
             <Grid.Col span={12}>
               <Card>
-                <Title mb={6}>Certificate Records</Title>
+                <Title mb={6}>Inquiries Records</Title>
 
                 <Group>
                   <Add
-                    title="Resident"
+                    title="Inquiries"
                     schema={schema}
-                    endpoint="/api/certificate/addCertificate"
+                    endpoint="/api/inquiries/addInquiries"
                     initialValues={initialValues}
                   />
                   <Delete
                     selectedID={selectedID}
-                    title="Resident"
-                    endpoint="/api/certificate/deleteCertificate"
+                    title="Inquiries"
+                    endpoint="/api/inquiries/deleteInquiries"
                   />
                 </Group>
 
@@ -133,7 +129,7 @@ const ResidentRecords = () => {
   );
 };
 
-export default ResidentRecords;
+export default InquiriesRecords;
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
