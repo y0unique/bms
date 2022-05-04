@@ -5,14 +5,20 @@ const InquiriesModal = ({form}) => {
   return (
     <>
       <Grid justify="center" grow>
-        <Grid.Col span={5}>
+      <Grid.Col span={4}>
           <TextInput
             label="Purpose"
             {...form.getInputProps("purpose")}
           ></TextInput>
         </Grid.Col>
+       <Grid.Col span={4}>
+          <TextInput
+            label="Report"
+            {...form.getInputProps("report")}
+          ></TextInput>
+        </Grid.Col>
 
-        <Grid.Col span={5}>
+        <Grid.Col span={4}>
           <TextInput
             label="Status"
             {...form.getInputProps("status")}
@@ -23,30 +29,20 @@ const InquiriesModal = ({form}) => {
           <Select
             label="Type"
             data={[
-              { value: "Blotter", label: "Blotter" },
-              { value: "Certificate", label: "Certificate" },
-            ]}
-            {...form.getInputProps("type")}
-          ></Select>
-        </Grid.Col>
-        
-        <Grid.Col span={6}>
-          <Select
-            label="Report"
-            data={[
               { value: "Barangay Certificate", label: "Barangay Certificate" },
               { value: "Certificate of Indigency", label: "Certificate of Indigency" },
             ]}
-            {...form.getInputProps("report")}
+            {...form.getInputProps("type")}
           ></Select>
         </Grid.Col>
 
         <Grid.Col span={4}>
           <DatePicker
+
+            placeholder="Set Date"
             label="Inquired Date"
-            placeholder="Set Inquired Date"
-            {...form.getInputProps("dateInquired", { type: "date" })}
-          ></DatePicker>
+            {...form.getInputProps("dateInquired")}
+          />
         </Grid.Col>
 
       </Grid>

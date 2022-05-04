@@ -18,9 +18,11 @@ export default async (req, res) => {
         if (
             req.body.purpose === "" ||
             req.body.report === "" ||
+
             req.body.status === "" || 
             req.body.dateInquired === "" ||
             req.body.type === "" 
+
         ) {
             res.statusCode = 400;
             res.json({ message: "One of the fields is empty." });
@@ -29,9 +31,9 @@ export default async (req, res) => {
         const result = await inquiries.insertOne({
             purpose: req.body.purpose,
             report: req.body.report,
-            dateInquired: req.body.dateInquired,
             type: req.body.type,
-            status: "pending"
+            dateInquired: req.body.dateInquired,
+            status: "active"
         });
         // send result
         return res.json({message:result})

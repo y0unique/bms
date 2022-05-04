@@ -1,3 +1,4 @@
+
 import { Card, Grid, Group, Text, Title } from "@mantine/core";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -157,3 +158,4 @@ export async function getServerSideProps(context) {
     },
   };
 }
+

@@ -25,6 +25,7 @@ export default async (req, res) => {
                 status: req.body.status,
                 type: req.body.type,
                 dateInquired: req.body.dateInquired,
+                status: req.body.status,
             }},
             function(err, result) {
                 if (err) throw err;

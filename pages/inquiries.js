@@ -20,9 +20,9 @@ const InquiriesRecords = () => {
 
   const schema = z.object({
     purpose: z.string().min(1, { message: "Purpose could not be empty" }),
-    report: z.enum(["Barangay Certificate", "Certificate of Indigency"]),
+    report: z.string().min(1, { message: "Report could not be empty" }),
     status: z.string().min(1, { message: "Status could not be empty" }),
-    type: z.enum(["Blotter", "Certificate"]),
+    type: z.enum(["Barangay Certificate", "Certificate of Indigency"]),
     dateInquired: z.date(),
   });
 
@@ -43,8 +43,8 @@ const InquiriesRecords = () => {
       },
     },
     {
-      Header: "Date Inquired",
-      accessor: "dateInquired",
+      Header: "Date Submitted",
+      accessor: "dateSubmitted",
       Cell: (props) => {   
         return new Date(props.row.original.dateSubmitted).toLocaleDateString();
       },
