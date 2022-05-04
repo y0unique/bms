@@ -1,24 +1,18 @@
 import {
   Button, LoadingOverlay, Modal
 } from "@mantine/core";
-import { useForm, zodResolver } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import { useState } from "react";
 import { Check } from "tabler-icons-react";
-import FormModal from "../modals/ResidentModal";
 
 
-const Add = ({schema, title, endpoint, initialValues}) => {
+
+const Add = ({ title, endpoint, form, child}) => {
   const [opened, setOpened] = useState(false);
   const [visible, setVisible] = useState(false);
   
-  
-  const form = useForm({
-    schema: zodResolver(schema),
-    initialValues: initialValues,
-  });
 
-const handleSubmit = async (values, setOpened, setVisible) => {
+const handleSubmit = async (values, setOpened, setVisible, child) => {
   setVisible((v) => !v);
   const result = await fetch(endpoint, {
     method: "POST",
@@ -69,7 +63,7 @@ const handleSubmit = async (values, setOpened, setVisible) => {
                async (values) => await handleSubmit(values, setOpened, setVisible)
              )}
            >
-             <FormModal form={form} />
+            {child}
            </form>
           }
         </div>

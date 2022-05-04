@@ -23,6 +23,4 @@ export default async (req, res) => {
     res.statusCode = 200;
     return res.json(documents);
 
-   
-
 }
