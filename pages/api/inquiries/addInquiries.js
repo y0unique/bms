@@ -18,9 +18,11 @@ export default async (req, res) => {
         if (
             req.body.purpose === "" ||
             req.body.report === "" ||
-            req.body.type === "" ||
+
+            req.body.status === "" || 
             req.body.dateInquired === "" ||
-            req.body.gender === "" 
+            req.body.type === "" 
+
         ) {
             res.statusCode = 400;
             res.json({ message: "One of the fields is empty." });

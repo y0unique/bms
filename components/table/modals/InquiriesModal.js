@@ -5,14 +5,13 @@ const InquiriesModal = ({form}) => {
   return (
     <>
       <Grid justify="center" grow>
-        <Grid.Col span={4}>
+      <Grid.Col span={4}>
           <TextInput
             label="Purpose"
             {...form.getInputProps("purpose")}
           ></TextInput>
         </Grid.Col>
-
-        <Grid.Col span={4}>
+       <Grid.Col span={4}>
           <TextInput
             label="Report"
             {...form.getInputProps("report")}
@@ -39,11 +38,13 @@ const InquiriesModal = ({form}) => {
 
         <Grid.Col span={4}>
           <DatePicker
+
             placeholder="Set Date"
             label="Inquired Date"
             {...form.getInputProps("dateInquired")}
           />
         </Grid.Col>
+
       </Grid>
       <Group position="right" mt="md">
         <Button type="submit">Submit</Button>

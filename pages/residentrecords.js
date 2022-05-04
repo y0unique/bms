@@ -38,6 +38,8 @@ const ResidentRecords = () => {
     residencyDate: "",
   };
 
+    
+ 
   const columns = [
     {
       Header: "Name",
@@ -60,6 +62,10 @@ const ResidentRecords = () => {
     {
       Header: "Address",
       accessor: "address",
+    },
+    {
+      Header: "Gender",
+      accessor: "gender",
     },
     {
       Header: "Residency Date",

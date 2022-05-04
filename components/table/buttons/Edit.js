@@ -58,7 +58,11 @@ const Edit = ({ data, title, endpoint, schema, child}) => {
     <Modal
         opened={opened}
         onClose={() => setOpened(false)}
-        title="Edit Resident Record"
+<<<<<<< HEAD
+        title={`Edit ${title} Record`}
+=======
+        title={`Edit ${title} Records`}
+>>>>>>> dc84ad49a73448504ec0c686cd30c14531fa8c01
         centered
         size="lg"
       >
