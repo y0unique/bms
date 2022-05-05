@@ -4,11 +4,20 @@ import {
 } from "@mantine/core";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
+import AgeBracket from "../components/charts/AgeBracket";
 import Layout from "../components/Layout";
 
 
 const Index = () => {
   const { data: session } = useSession();
+
+
+  const data = [
+    { name: 'Group A', value: 400 },
+    { name: 'Group B', value: 300 },
+    { name: 'Group C', value: 300 },
+    { name: 'Group D', value: 200 },
+  ];
   return (
     <>
       <Layout>
@@ -108,9 +117,12 @@ const Index = () => {
                     deserunt mollit anim id est laborum."
                   </Text>
                 </Card>
+                
                 <Card my="xs" sx={{ height: 400 }}>
-                  <Text align="center">Total Population Summary</Text>
-
+                  <Text  color="dimmed">Age Bracket</Text>
+                  <Grid justify="center">
+                  <AgeBracket data={data} />
+                  </Grid>
                 </Card>
               </Grid.Col>
             </Grid>
@@ -136,9 +148,8 @@ export async function getServerSideProps(context) {
       },
     }
   }
-
   return {
-    props: { session }
+    props: { session },
   }
 }
 

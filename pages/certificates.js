@@ -15,44 +15,54 @@ import ReactTable from "../components/table/ReactTable";
 
 import CertificateModal from "../components/table/modals/CertificateModal";
 
-const InquiriesRecords = () => {
+const CertificateRecords = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const [selectedID, setSelectedID] = useState("");
 
   const schema = z.object({
-    purpose: z.string().min(1, { message: "Purpose could not be empty" }),
-    report: z.enum(["Barangay Certificate", "Certificate of Indigency"]),
-    status: z.string().min(1, { message: "Status could not be empty" }),
-    type: z.enum(["Blotter", "Certificate"]),
-    dateInquired: z.date(),
+    type: z.string().min(1, { message: "Could not be empty" }),
+    dateSubmitted: z.date(),
   });
 
   const initialValues = {
-    purpose: "",
-    report: "",
-    status: "",
     type: "",
-    dateInquired: "",
+    dateSubmitted: "",
   };
 
+    
   const form = useForm({
     schema: zodResolver(schema),
     initialValues: initialValues,
     });
-
+ 
   const columns = [
+    // {
+    //   Header: "Name",
+    //   accessor: "firstname",
+    //   Cell: (props) => {
+    //     return `${props.row.original.firstname} ${props.row.original.middlename}
+    //    ${props.row.original.lastname}`;
+    //   },
+    // },
+    // {
+    //   Header: "Age",
+    //   accessor: "age",
+    //   Cell: (props) => {
+    //     const now = moment();
+    //     const birth = moment(props.row.original.birthdate);
+    //     const diff = now.diff(birth, "years");
+    //     return diff;
+    //   },
+    // },
     {
       Header: "Type",
       accessor: "type",
-      Cell: (props) => {
-        return `${props.row.original.type}`;
-      },
     },
     {
-      Header: "Date Inquired",
-      accessor: "dateInquired",
-      Cell: (props) => {   
-        return new Date(props.row.original.dateSubmitted).toLocaleDateString();
+      Header: "Submitted Date",
+      accessor: "dateSubmitted",
+      Cell: (props) => {
+        return moment(props.row.original.dateSubmitted).format("MM-DD-YYYY");
       },
     },
     {
@@ -60,17 +70,17 @@ const InquiriesRecords = () => {
       accessor: "action",
       Cell: (props) => {
         // Convert strings to dates to render in modal
-        props.row.original.dateInquired = new Date(props.row.original.dateInquired);
-        props.row.original.dateInquired = new Date(
-          props.row.original.dateInquired
+        props.row.original.dateSubmitted = new Date(props.row.original.dateSubmitted);
+        props.row.original.dateSubmitted = new Date(
+          props.row.original.dateSubmitted
         );
         return (
           <Edit
             data={props.row.original}
             schema={schema}
-            title="Inquiries"
-            endpoint="/api/inquiries/updateInquiries"
-            child={<InquiriesModal />}
+            title="Certificate"
+            endpoint="/api/certificate/updateCertificate"
+            child={<CertificateModal form={form}/>}
           />
         );
       },
@@ -78,7 +88,7 @@ const InquiriesRecords = () => {
   ];
 
   const { data: session } = useSession();
-  const { data, error } = useSWR("/api/inquiries/getCertificate", fetcher, {
+  const { data, error } = useSWR("/api/certificate/getCertificates", fetcher, {
     refreshInterval: 500,
   });
 
@@ -104,20 +114,21 @@ const InquiriesRecords = () => {
           <Grid mt={12}>
             <Grid.Col span={12}>
               <Card>
-                <Title mb={6}>Inquiries Records</Title>
+                <Title mb={6}>Certificate Records</Title>
 
                 <Group>
                   <Add
-                    title="Inquiries"
+                    title="Certificate"
                     schema={schema}
-                    endpoint="/api/inquiries/addInquiries"
-                    initialValues={initialValues}
                     form={form}
+                    endpoint="/api/certificate/addCertificate"
+                    initialValues={initialValues}
+                    child={<CertificateModal form={form}/>}
                   />
                   <Delete
                     selectedID={selectedID}
-                    title="Inquiries"
-                    endpoint="/api/inquiries/deleteInquiries"
+                    title="Certificate"
+                    endpoint="/api/certificate/deleteCertificate"
                   />
                 </Group>
 
@@ -136,7 +147,7 @@ const InquiriesRecords = () => {
   );
 };
 
-export default InquiriesRecords;
+export default CertificateRecords;
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);

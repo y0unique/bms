@@ -12,23 +12,33 @@ export default async (req, res) => {
     if (req.method === "POST") {
         const client = await clientPromise;
         const db = client.db("barangayDB");
-        const collection = db.collection("documents");
+        const activity = db.collection("activies");
         // Insert document into collection
         // Check if one of the fields is empty
         if (
-            req.body.type === "" ||
-            req.body.dateSubmitted === ""
+            req.body.what === "" ||
+            req.body.where === "" ||
+            req.body.when === "" || 
+            req.body.why === "" ||
+            req.body.how === "" ||
+            req.body.who === "" 
         ) {
             res.statusCode = 400;
             res.json({ message: "One of the fields is empty." });
             return;
         }
-        const result = await collection.insertOne({
-            type: req.body.type,
-            dateSubmitted: req.body.dateSubmitted,
+        console.log(req.body);
+        const result = await activity.insertOne({
+            what: req.body.what,
+            where: req.body.where,    
+            why: req.body.why,
+            how: req.body.how,
+            who: req.body.who,
+            when: req.body.when,
             status: "active"
         });
         // send result
+        console.log(req.body);
         return res.json({message:result})
 
     }

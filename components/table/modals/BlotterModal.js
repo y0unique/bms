@@ -1,22 +1,21 @@
 import { Button, Grid, Group, Select, TextInput } from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
 
-const CertificateModal = ({form}) => {
+const BlotterModal = ({form}) => {
   return (
     <>
       <Grid justify="center" grow>
         <Grid.Col span={10}>
           <TextInput
-            label="Type"
-            {...form.getInputProps("type")}
+            label="Report"
+            {...form.getInputProps("report")}
           ></TextInput>
         </Grid.Col>
-
-        <Grid.Col span={4}>
+        <Grid.Col span={10}>
           <DatePicker
             placeholder="Set Date"
-            label="Submitted Date"
-            {...form.getInputProps("dateSubmitted")}
+            label="Record Date"
+            {...form.getInputProps("dateRecord")}
           />
         </Grid.Col>
       </Grid>
@@ -28,4 +27,4 @@ const CertificateModal = ({form}) => {
   );
 };
 
-export default CertificateModal;
+export default BlotterModal;

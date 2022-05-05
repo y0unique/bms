@@ -29,8 +29,6 @@ export default async (req, res) => {
         if (!resident) continue;
         inquiry[i].resident = resident;
     }
-    
-    console.log(inquiry);
     // If there is no error, return the data
     res.statusCode = 200;
     return res.json(inquiry);
