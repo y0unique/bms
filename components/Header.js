@@ -14,10 +14,10 @@ import Link from "next/link";
 import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
-  {
-    link: "/",
-    label: "Home",
-  },
+  // {
+  //   link: "/",
+  //   label: "Home",
+  // },
   // {
   //   "link": "#1",
   //   "label": "Learn",
@@ -40,18 +40,18 @@ const links = [
   //     }
   //   ]
   // },
-  {
-    link: "/about",
-    label: "About",
-  },
-  {
-    link: "/announcement",
-    label: "Announcement",
-  },
-  {
-    link: "/Chats",
-    label: "Chat",
-  },
+  // {
+  //   link: "/about",
+  //   label: "About",
+  // },
+  // {
+  //   link: "/announcement",
+  //   label: "Announcement",
+  // },
+  // {
+  //   link: "/Chats",
+  //   label: "Chat",
+  // },
 ];
 const HEADER_HEIGHT = 60;
 

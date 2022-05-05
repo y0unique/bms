@@ -12,7 +12,7 @@ export default async (req, res) => {
     const db = client.db("barangayDB");
     const collection = db.collection("inquiries");
     // filter document with active status 
-    const inquiry = await collection.find({ status: "pending" }).toArray();
+    const inquiry = await collection.find().toArray();
     // If there is error, return error message
     if (inquiry.length === 0) {
         res.statusCode = 404;

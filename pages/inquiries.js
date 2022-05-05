@@ -1,10 +1,11 @@
-import { Card, Grid, Group, Text, Title } from "@mantine/core";
+import { Card, Grid, Group, Text, Title, Badge  } from "@mantine/core";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
 import moment from "moment";
 import { z } from "zod";
+import { useForm, zodResolver } from "@mantine/form";
 
 import Layout from "../components/Layout";
 import Add from "../components/table/buttons/Add";
@@ -32,7 +33,14 @@ const InquiriesRecords = () => {
     status: "",
     type: "",
     dateInquired: "",
+    resident: ""
   };
+
+  const form = useForm({
+    schema: zodResolver(schema),
+    initialValues: initialValues,
+    });
+
 
   const columns = [
     {
@@ -43,10 +51,31 @@ const InquiriesRecords = () => {
       },
     },
     {
-      Header: "Date Submitted",
-      accessor: "dateSubmitted",
+      Header: "Purpose",
+      accessor: "purpose"
+    },
+    {
+      Header: "Report",
+      accessor: "report"
+    },
+    {
+      Header: "Status",
+      accessor: "status",
       Cell: (props) => {   
-        return new Date(props.row.original.dateSubmitted).toLocaleDateString();
+        if (props.row.original.status === "active") {
+          return <Badge color="green">{props.row.original.status}</Badge>
+        }
+        else if  (props.row.original.status === "pending") {
+          return <Badge color="yellow">{props.row.original.status}</Badge>
+        }
+        return <Badge>{props.row.original.status}</Badge>
+     },
+    },
+    {
+      Header: "Date Inquired",
+      accessor: "dateInquired",
+      Cell: (props) => {   
+         return moment(props.row.original.dateInquired).format("MM-DD-YYYY");
       },
     },
     {
@@ -55,16 +84,13 @@ const InquiriesRecords = () => {
       Cell: (props) => {
         // Convert strings to dates to render in modal
         props.row.original.dateInquired = new Date(props.row.original.dateInquired);
-        props.row.original.dateInquired = new Date(
-          props.row.original.dateInquired
-        );
         return (
           <Edit
             data={props.row.original}
             schema={schema}
             title="Inquiries"
             endpoint="/api/inquiries/updateInquiries"
-            child={<InquiriesModal />}
+            child={<InquiriesModal form={form} />}
           />
         );
       },
@@ -100,19 +126,7 @@ const InquiriesRecords = () => {
               <Card>
                 <Title mb={6}>Inquiries Records</Title>
 
-                <Group>
-                  <Add
-                    title="Inquiries"
-                    schema={schema}
-                    endpoint="/api/inquiries/addInquiries"
-                    initialValues={initialValues}
-                  />
-                  <Delete
-                    selectedID={selectedID}
-                    title="Inquiries"
-                    endpoint="/api/inquiries/deleteInquiries"
-                  />
-                </Group>
+              
 
                 <ReactTable
                   data={data}
