@@ -5,6 +5,7 @@ import { useState } from "react";
 import useSWR from "swr";
 import moment from "moment";
 import { z } from "zod";
+import { useForm, zodResolver } from "@mantine/form";
 
 import Layout from "../components/Layout";
 import Add from "../components/table/buttons/Add";
@@ -39,6 +40,10 @@ const ResidentRecords = () => {
   };
 
     
+  const form = useForm({
+    schema: zodResolver(schema),
+    initialValues: initialValues,
+    });
  
   const columns = [
     {
@@ -89,7 +94,7 @@ const ResidentRecords = () => {
             schema={schema}
             title="Resident"
             endpoint="/api/resident/updateResident"
-            child={<ResidentModal />}
+            child={<ResidentModal form={form}/>}
           />
         );
       },
@@ -129,8 +134,10 @@ const ResidentRecords = () => {
                   <Add
                     title="Resident"
                     schema={schema}
+                    form={form}
                     endpoint="/api/resident/addResident"
                     initialValues={initialValues}
+                    child={<ResidentModal form={form}/>}
                   />
                   <Delete
                     selectedID={selectedID}
