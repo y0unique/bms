@@ -44,19 +44,15 @@ const InquiriesRecords = () => {
 
   const columns = [
     {
-      Header: "Type",
-      accessor: "type",
+      Header: "Name",
+      accessor: "resident",
       Cell: (props) => {
-        return `${props.row.original.type}`;
+        return `${props.row.original.resident}`;
       },
     },
     {
-      Header: "Purpose",
-      accessor: "purpose"
-    },
-    {
-      Header: "Report",
-      accessor: "report"
+      Header: "Type",
+      accessor: "type"
     },
     {
       Header: "Status",
@@ -126,7 +122,21 @@ const InquiriesRecords = () => {
               <Card>
                 <Title mb={6}>Inquiries Records</Title>
 
-              
+                {/* <Group>
+                  <Add
+                    title="Inquiries"
+                    schema={schema}
+                    endpoint="/api/inquiries/addInquiries"
+                    initialValues={initialValues}
+                    form={form}
+                    child={<InquiriesModal form={form} />}
+                  />
+                  <Delete
+                    selectedID={selectedID}
+                    title="Inquiries"
+                    endpoint="/api/inquiries/deleteInquiries"
+                  />
+                </Group> */}
 
                 <ReactTable
                   data={data}

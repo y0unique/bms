@@ -1,5 +1,6 @@
 import clientPromise from "../../../lib/mongodb";
 import { getSession } from "next-auth/react";
+var ObjectId = require('mongodb').ObjectId;
 
 export default async (req, res) => {
     const session = await getSession({ req });
@@ -19,10 +20,25 @@ export default async (req, res) => {
         res.json({ message: "No Inquiry record found." });
         return;
     }
+    console.log(inquiry);
+    // Loop through the inquiry records
+    // Find the resident name
+    // Push the name to the inquiry record
+    for (let i = 0; i < inquiry.length; i++) {
+        const resident = await findResident(db, inquiry[i].resident);
+        if (!resident) continue;
+        inquiry[i].resident = resident;
+    }
+    
+    console.log(inquiry);
     // If there is no error, return the data
     res.statusCode = 200;
     return res.json(inquiry);
+}
 
-   
-
+async function findResident(db, id ) {
+    const collection = db.collection("resident");
+    let o_id = new ObjectId(id);
+    const resident = await collection.findOne({_id:o_id});
+    return resident;
 }
