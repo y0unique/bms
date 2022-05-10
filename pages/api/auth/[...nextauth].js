@@ -27,7 +27,9 @@ export default NextAuth({
           return {
             user: {
               id: user._id,
-              username: user.username,         
+              username: user.username,  
+              roles: user.roles,  
+              resident: user.resident,     
           }};
 
         }
@@ -40,12 +42,22 @@ export default NextAuth({
   ],
   callbacks: {
     async session({ session, token }) {
+      
       session.user = token.user;
+      if (token?.resident) {
+        session.user.resident = token.resident
+      }
+      if (token?.roles) {
+        session.user.roles = token.roles
+      }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
         token.user = user;
+      }
+      if (user?.roles) {
+        token.roles = user.roles
       }
       return token;
     },

@@ -7,26 +7,33 @@ import moment from "moment";
 import { z } from "zod";
 import { useForm, zodResolver } from "@mantine/form";
 
-import Layout from "../components/Layout";
-import Add from "../components/table/buttons/Add";
-import Delete from "../components/table/buttons/Delete";
-import Edit from "../components/table/buttons/Edit";
-import ReactTable from "../components/table/ReactTable";
+import Layout from "../../components/Layout";
+import Add from "../../components/table/buttons/Add";
+import Delete from "../../components/table/buttons/Delete";
+import Edit from "../../components/table/buttons/Edit";
+import ReactTable from "../../components/table/ReactTable";
 
-import BlotterModal from "../components/table/modals/BlotterModal";
+import ActivityModal from "../../components/table/modals/ActivityModal";
 
-const BlotterRecords = () => {
+const ActivityRecords = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const [selectedID, setSelectedID] = useState("");
 
   const schema = z.object({
-    report: z.string().min(1, { message: "could not be empty" }),
-    dateRecord: z.date(),
+    what: z.string().min(1, { message: "could not be empty" }),
+    where: z.string().min(1, { message: "could not be empty" }),
+    why: z.string().min(1, { message: "could not be empty" }),
+    who: z.string().min(1, { message: "could not be empty" }),
+    when: z.date(),
   });
 
   const initialValues = {
-    report: "",
-    dateRecord: "",
+    what: "",
+    where: "",
+    when: "",
+    who: "",
+    why: "",
+    how: "",
   };
 
     
@@ -55,14 +62,26 @@ const BlotterRecords = () => {
     //   },
     // },
     {
-      Header: "Report",
-      accessor: "report",
+      Header: "What",
+      accessor: "what",
     },
     {
-      Header: "Record Date",
-      accessor: "dateRecord",
+      Header: "Where",
+      accessor: "where",
+    },
+    {
+      Header: "Who",
+      accessor: "who",
+    },
+    {
+      Header: "How",
+      accessor: "how",
+    },
+    {
+      Header: "When",
+      accessor: "when",
       Cell: (props) => {
-        return moment(props.row.original.dateRecord).format("MM-DD-YYYY");
+        return moment(props.row.original.when).format("MM-DD-YYYY");
       },
     },
     {
@@ -70,17 +89,17 @@ const BlotterRecords = () => {
       accessor: "action",
       Cell: (props) => {
         // Convert strings to dates to render in modal
-        props.row.original.dateRecord = new Date(props.row.original.dateRecord);
-        props.row.original.dateRecord = new Date(
-          props.row.original.dateRecord
+        props.row.original.birthdate = new Date(props.row.original.birthdate);
+        props.row.original.when = new Date(
+          props.row.original.when
         );
         return (
           <Edit
             data={props.row.original}
             schema={schema}
-            title="Blotter"
-            endpoint="/api/blotter/updateBlotter"
-            child={<BlotterModal form={form}/>}
+            title="Activity"
+            endpoint="/api/activity/updateActivity"
+            child={<ActivityModal form={form}/>}
           />
         );
       },
@@ -88,7 +107,7 @@ const BlotterRecords = () => {
   ];
 
   const { data: session } = useSession();
-  const { data, error } = useSWR("/api/blotter/getBlotter", fetcher, {
+  const { data, error } = useSWR("/api/activity/getActivity", fetcher, {
     refreshInterval: 500,
   });
 
@@ -114,21 +133,21 @@ const BlotterRecords = () => {
           <Grid mt={12}>
             <Grid.Col span={12}>
               <Card>
-                <Title mb={6}>Blotter Records</Title>
+                <Title mb={6}>Activity Records</Title>
 
                 <Group>
                   <Add
-                    title="Blotter"
+                    title="Activity"
                     schema={schema}
                     form={form}
-                    endpoint="/api/blotter/addBlotter"
+                    endpoint="/api/activity/addActivity"
                     initialValues={initialValues}
-                    child={<BlotterModal form={form}/>}
+                    child={<ActivityModal form={form}/>}
                   />
                   <Delete
                     selectedID={selectedID}
-                    title="Blotter"
-                    endpoint="/api/blotter/deleteBlotter"
+                    title="Activity"
+                    endpoint="/api/activity/deleteActivity"
                   />
                 </Group>
 
@@ -147,7 +166,7 @@ const BlotterRecords = () => {
   );
 };
 
-export default BlotterRecords;
+export default ActivityRecords;
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);

@@ -20,7 +20,7 @@ export default async (req, res) => {
         res.json({ message: "No Inquiry record found." });
         return;
     }
-    console.log(inquiry);
+   
     // Loop through the inquiry records
     // Find the resident name
     // Push the name to the inquiry record

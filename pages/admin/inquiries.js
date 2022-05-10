@@ -7,13 +7,13 @@ import moment from "moment";
 import { z } from "zod";
 import { useForm, zodResolver } from "@mantine/form";
 
-import Layout from "../components/Layout";
-import Add from "../components/table/buttons/Add";
-import Delete from "../components/table/buttons/Delete";
-import Edit from "../components/table/buttons/Edit";
-import ReactTable from "../components/table/ReactTable";
+import Layout from "../../components/Layout";
+import Add from "../../components/table/buttons/Add";
+import Delete from "../../components/table/buttons/Delete";
+import Edit from "../../components/table/buttons/Edit";
+import ReactTable from "../../components/table/ReactTable";
 
-import InquiriesModal from "../components/table/modals/InquiriesModal";
+import InquiriesModal from "../../components/table/modals/InquiriesModal";
 
 const InquiriesRecords = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -47,7 +47,8 @@ const InquiriesRecords = () => {
       Header: "Name",
       accessor: "resident",
       Cell: (props) => {
-        return `${props.row.original.resident}`;
+        console.log(props.row.original);
+        return `${props.row.original?.resident?.firstname} ${props.row.original?.resident?.middlename} ${props.row.original?.resident?.lastname}`;
       },
     },
     {
@@ -122,21 +123,21 @@ const InquiriesRecords = () => {
               <Card>
                 <Title mb={6}>Inquiries Records</Title>
 
-                {/* <Group>
-                  <Add
+                <Group>
+                  {/* <Add
                     title="Inquiries"
                     schema={schema}
                     endpoint="/api/inquiries/addInquiries"
                     initialValues={initialValues}
                     form={form}
                     child={<InquiriesModal form={form} />}
-                  />
+                  /> */}
                   <Delete
                     selectedID={selectedID}
                     title="Inquiries"
                     endpoint="/api/inquiries/deleteInquiries"
                   />
-                </Group> */}
+                </Group>
 
                 <ReactTable
                   data={data}

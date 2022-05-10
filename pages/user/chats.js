@@ -7,26 +7,36 @@ import moment from "moment";
 import { z } from "zod";
 import { useForm, zodResolver } from "@mantine/form";
 
-import Layout from "../components/Layout";
-import Add from "../components/table/buttons/Add";
-import Delete from "../components/table/buttons/Delete";
-import Edit from "../components/table/buttons/Edit";
-import ReactTable from "../components/table/ReactTable";
+import Layout from "../../components/Layout";
+import Add from "../../components/table/buttons/Add";
+import Delete from "../../components/table/buttons/Delete";
+import Edit from "../../components/table/buttons/Edit";
+import ReactTable from "../../components/table/ReactTable";
 
-import CertificateModal from "../components/table/modals/CertificateModal";
+import ResidentModal from "../../components/table/modals/ResidentModal";
 
-const CertificateRecords = () => {
+const ResidentRecords = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const [selectedID, setSelectedID] = useState("");
 
   const schema = z.object({
-    type: z.string().min(1, { message: "Could not be empty" }),
-    dateSubmitted: z.date(),
+    firstname: z.string().min(1, { message: "Name could not be empty" }),
+    middlename: z.string().default("test"),
+    lastname: z.string().min(1, { message: "Lastname could not be empty" }),
+    address: z.string().min(1, { message: "Address could not be empty" }),
+    birthdate: z.date(),
+    gender: z.enum(["male", "female"]),
+    residencyDate: z.date(),
   });
 
   const initialValues = {
-    type: "",
-    dateSubmitted: "",
+    firstname: "",
+    middlename: "",
+    lastname: "",
+    address: "",
+    birthdate: "",
+    gender: "",
+    residencyDate: "",
   };
 
     
@@ -36,33 +46,37 @@ const CertificateRecords = () => {
     });
  
   const columns = [
-    // {
-    //   Header: "Name",
-    //   accessor: "firstname",
-    //   Cell: (props) => {
-    //     return `${props.row.original.firstname} ${props.row.original.middlename}
-    //    ${props.row.original.lastname}`;
-    //   },
-    // },
-    // {
-    //   Header: "Age",
-    //   accessor: "age",
-    //   Cell: (props) => {
-    //     const now = moment();
-    //     const birth = moment(props.row.original.birthdate);
-    //     const diff = now.diff(birth, "years");
-    //     return diff;
-    //   },
-    // },
     {
-      Header: "Type",
-      accessor: "type",
+      Header: "Name",
+      accessor: "firstname",
+      Cell: (props) => {
+        return `${props.row.original.firstname} ${props.row.original.middlename}
+       ${props.row.original.lastname}`;
+      },
     },
     {
-      Header: "Submitted Date",
-      accessor: "dateSubmitted",
+      Header: "Age",
+      accessor: "age",
       Cell: (props) => {
-        return moment(props.row.original.dateSubmitted).format("MM-DD-YYYY");
+        const now = moment();
+        const birth = moment(props.row.original.birthdate);
+        const diff = now.diff(birth, "years");
+        return diff;
+      },
+    },
+    {
+      Header: "Address",
+      accessor: "address",
+    },
+    {
+      Header: "Gender",
+      accessor: "gender",
+    },
+    {
+      Header: "Residency Date",
+      accessor: "residencyDate",
+      Cell: (props) => {
+        return moment(props.row.original.residencyDate).format("MM-DD-YYYY");
       },
     },
     {
@@ -70,17 +84,17 @@ const CertificateRecords = () => {
       accessor: "action",
       Cell: (props) => {
         // Convert strings to dates to render in modal
-        props.row.original.dateSubmitted = new Date(props.row.original.dateSubmitted);
-        props.row.original.dateSubmitted = new Date(
-          props.row.original.dateSubmitted
+        props.row.original.birthdate = new Date(props.row.original.birthdate);
+        props.row.original.residencyDate = new Date(
+          props.row.original.residencyDate
         );
         return (
           <Edit
             data={props.row.original}
             schema={schema}
-            title="Certificate"
-            endpoint="/api/certificate/updateCertificate"
-            child={<CertificateModal form={form}/>}
+            title="Resident"
+            endpoint="/api/resident/updateResident"
+            child={<ResidentModal form={form}/>}
           />
         );
       },
@@ -88,7 +102,7 @@ const CertificateRecords = () => {
   ];
 
   const { data: session } = useSession();
-  const { data, error } = useSWR("/api/certificate/getCertificates", fetcher, {
+  const { data, error } = useSWR("/api/resident/getResidents", fetcher, {
     refreshInterval: 500,
   });
 
@@ -114,21 +128,21 @@ const CertificateRecords = () => {
           <Grid mt={12}>
             <Grid.Col span={12}>
               <Card>
-                <Title mb={6}>Certificate Records</Title>
+                <Title mb={6}>Resident Records</Title>
 
                 <Group>
                   <Add
-                    title="Certificate"
+                    title="Resident"
                     schema={schema}
                     form={form}
-                    endpoint="/api/certificate/addCertificate"
+                    endpoint="/api/resident/addResident"
                     initialValues={initialValues}
-                    child={<CertificateModal form={form}/>}
+                    child={<ResidentModal form={form}/>}
                   />
                   <Delete
                     selectedID={selectedID}
-                    title="Certificate"
-                    endpoint="/api/certificate/deleteCertificate"
+                    title="Resident"
+                    endpoint="/api/resident/deleteResident"
                   />
                 </Group>
 
@@ -147,7 +161,7 @@ const CertificateRecords = () => {
   );
 };
 
-export default CertificateRecords;
+export default ResidentRecords;
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);

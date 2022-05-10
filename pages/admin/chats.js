@@ -7,33 +7,36 @@ import moment from "moment";
 import { z } from "zod";
 import { useForm, zodResolver } from "@mantine/form";
 
-import Layout from "../components/Layout";
-import Add from "../components/table/buttons/Add";
-import Delete from "../components/table/buttons/Delete";
-import Edit from "../components/table/buttons/Edit";
-import ReactTable from "../components/table/ReactTable";
+import Layout from "../../components/Layout";
+import Add from "../../components/table/buttons/Add";
+import Delete from "../../components/table/buttons/Delete";
+import Edit from "../../components/table/buttons/Edit";
+import ReactTable from "../../components/table/ReactTable";
 
-import ActivityModal from "../components/table/modals/ActivityModal";
+import ResidentModal from "../../components/table/modals/ResidentModal";
 
-const ActivityRecords = () => {
+const ResidentRecords = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const [selectedID, setSelectedID] = useState("");
 
   const schema = z.object({
-    what: z.string().min(1, { message: "could not be empty" }),
-    where: z.string().min(1, { message: "could not be empty" }),
-    why: z.string().min(1, { message: "could not be empty" }),
-    who: z.string().min(1, { message: "could not be empty" }),
-    when: z.date(),
+    firstname: z.string().min(1, { message: "Name could not be empty" }),
+    middlename: z.string().default("test"),
+    lastname: z.string().min(1, { message: "Lastname could not be empty" }),
+    address: z.string().min(1, { message: "Address could not be empty" }),
+    birthdate: z.date(),
+    gender: z.enum(["male", "female"]),
+    residencyDate: z.date(),
   });
 
   const initialValues = {
-    what: "",
-    where: "",
-    when: "",
-    who: "",
-    why: "",
-    how: "",
+    firstname: "",
+    middlename: "",
+    lastname: "",
+    address: "",
+    birthdate: "",
+    gender: "",
+    residencyDate: "",
   };
 
     
@@ -43,45 +46,37 @@ const ActivityRecords = () => {
     });
  
   const columns = [
-    // {
-    //   Header: "Name",
-    //   accessor: "firstname",
-    //   Cell: (props) => {
-    //     return `${props.row.original.firstname} ${props.row.original.middlename}
-    //    ${props.row.original.lastname}`;
-    //   },
-    // },
-    // {
-    //   Header: "Age",
-    //   accessor: "age",
-    //   Cell: (props) => {
-    //     const now = moment();
-    //     const birth = moment(props.row.original.birthdate);
-    //     const diff = now.diff(birth, "years");
-    //     return diff;
-    //   },
-    // },
     {
-      Header: "What",
-      accessor: "what",
-    },
-    {
-      Header: "Where",
-      accessor: "where",
-    },
-    {
-      Header: "Who",
-      accessor: "who",
-    },
-    {
-      Header: "How",
-      accessor: "how",
-    },
-    {
-      Header: "When",
-      accessor: "when",
+      Header: "Name",
+      accessor: "firstname",
       Cell: (props) => {
-        return moment(props.row.original.when).format("MM-DD-YYYY");
+        return `${props.row.original.firstname} ${props.row.original.middlename}
+       ${props.row.original.lastname}`;
+      },
+    },
+    {
+      Header: "Age",
+      accessor: "age",
+      Cell: (props) => {
+        const now = moment();
+        const birth = moment(props.row.original.birthdate);
+        const diff = now.diff(birth, "years");
+        return diff;
+      },
+    },
+    {
+      Header: "Address",
+      accessor: "address",
+    },
+    {
+      Header: "Gender",
+      accessor: "gender",
+    },
+    {
+      Header: "Residency Date",
+      accessor: "residencyDate",
+      Cell: (props) => {
+        return moment(props.row.original.residencyDate).format("MM-DD-YYYY");
       },
     },
     {
@@ -90,16 +85,16 @@ const ActivityRecords = () => {
       Cell: (props) => {
         // Convert strings to dates to render in modal
         props.row.original.birthdate = new Date(props.row.original.birthdate);
-        props.row.original.when = new Date(
-          props.row.original.when
+        props.row.original.residencyDate = new Date(
+          props.row.original.residencyDate
         );
         return (
           <Edit
             data={props.row.original}
             schema={schema}
-            title="Activity"
-            endpoint="/api/activity/updateActivity"
-            child={<ActivityModal form={form}/>}
+            title="Resident"
+            endpoint="/api/resident/updateResident"
+            child={<ResidentModal form={form}/>}
           />
         );
       },
@@ -107,7 +102,7 @@ const ActivityRecords = () => {
   ];
 
   const { data: session } = useSession();
-  const { data, error } = useSWR("/api/activity/getActivity", fetcher, {
+  const { data, error } = useSWR("/api/resident/getResidents", fetcher, {
     refreshInterval: 500,
   });
 
@@ -133,21 +128,21 @@ const ActivityRecords = () => {
           <Grid mt={12}>
             <Grid.Col span={12}>
               <Card>
-                <Title mb={6}>Activity Records</Title>
+                <Title mb={6}>Resident Records</Title>
 
                 <Group>
                   <Add
-                    title="Activity"
+                    title="Resident"
                     schema={schema}
                     form={form}
-                    endpoint="/api/activity/addActivity"
+                    endpoint="/api/resident/addResident"
                     initialValues={initialValues}
-                    child={<ActivityModal form={form}/>}
+                    child={<ResidentModal form={form}/>}
                   />
                   <Delete
                     selectedID={selectedID}
-                    title="Activity"
-                    endpoint="/api/activity/deleteActivity"
+                    title="Resident"
+                    endpoint="/api/resident/deleteResident"
                   />
                 </Group>
 
@@ -166,7 +161,7 @@ const ActivityRecords = () => {
   );
 };
 
-export default ActivityRecords;
+export default ResidentRecords;
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);

@@ -8,6 +8,10 @@ const InquiriesModal = ({form}) => {
         <Grid.Col span={5}>
           <TextInput
             label="Purpose"
+            data={[
+              { value: "Certificate", label: "Certificate" },
+              { value: "Blotter", label: "Blotter" },
+            ]}
             {...form.getInputProps("purpose")}
           ></TextInput>
         </Grid.Col>
@@ -51,7 +55,8 @@ const InquiriesModal = ({form}) => {
 
       </Grid>
       <Group position="right" mt="md">
-        <Button type="submit">Submit</Button>
+        <Button type="submit">Action</Button>
+       
       </Group>
     </>
     

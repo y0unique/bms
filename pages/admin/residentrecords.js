@@ -7,13 +7,13 @@ import moment from "moment";
 import { z } from "zod";
 import { useForm, zodResolver } from "@mantine/form";
 
-import Layout from "../components/Layout";
-import Add from "../components/table/buttons/Add";
-import Delete from "../components/table/buttons/Delete";
-import Edit from "../components/table/buttons/Edit";
-import ReactTable from "../components/table/ReactTable";
+import Layout from "../../components/Layout";
+import Add from "../../components/table/buttons/Add";
+import Delete from "../../components/table/buttons/Delete";
+import Edit from "../../components/table/buttons/Edit";
+import ReactTable from "../../components/table/ReactTable";
 
-import ResidentModal from "../components/table/modals/ResidentModal";
+import ResidentModal from "../../components/table/modals/ResidentModal";
 
 const ResidentRecords = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
