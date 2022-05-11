@@ -1,3 +1,4 @@
+
 import React, { useMemo, useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import { Text } from "@mantine/core";
@@ -31,11 +32,11 @@ const renderCustomizedLabel = ({
     </Text>
   );
 };
-export default function AgeBracket() {
+export default function EmploymentBracket() {
 
   const [data, setData] = useState([]);
    useMemo(() => {
-    fetch("/api/analytics/getAgeBracket")
+    fetch("/api/analytics/getEmploymentBracket")
         .then(res => res.json())
         .then(data => {
             setData(data);

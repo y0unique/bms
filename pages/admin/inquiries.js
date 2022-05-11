@@ -8,7 +8,7 @@ import { z } from "zod";
 import { useForm, zodResolver } from "@mantine/form";
 
 import Layout from "../../components/Layout";
-import Add from "../../components/table/buttons/Add";
+// import Add from "../../components/table/buttons/Add";
 import Delete from "../../components/table/buttons/Delete";
 import Edit from "../../components/table/buttons/Edit";
 import ReactTable from "../../components/table/ReactTable";
@@ -20,10 +20,10 @@ const InquiriesRecords = () => {
   const [selectedID, setSelectedID] = useState("");
 
   const schema = z.object({
-    purpose: z.string().min(1, { message: "Purpose could not be empty" }),
+    purpose:  z.enum(["Certificate", "Blotter"]),
     report: z.string().min(1, { message: "Report could not be empty" }),
-    status: z.string().min(1, { message: "Status could not be empty" }),
-    type: z.enum(["Barangay Certificate", "Certificate of Indigency"]),
+    status: z.enum(["pending", "active"]),
+    type: z.enum(["Blotter","Barangay Certificate", "Certificate of Indigency", "Barangay ID"]),
     dateInquired: z.date(),
   });
 
@@ -65,6 +65,9 @@ const InquiriesRecords = () => {
         else if  (props.row.original.status === "pending") {
           return <Badge color="yellow">{props.row.original.status}</Badge>
         }
+        else if  (props.row.original.status === "inactive") {
+          return <Badge color="red">{props.row.original.status}</Badge>
+        }
         return <Badge>{props.row.original.status}</Badge>
      },
     },
@@ -85,7 +88,7 @@ const InquiriesRecords = () => {
           <Edit
             data={props.row.original}
             schema={schema}
-            title="Inquiries"
+            title="Inquiry"
             endpoint="/api/inquiries/updateInquiries"
             child={<InquiriesModal form={form} />}
           />

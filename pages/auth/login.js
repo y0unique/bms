@@ -6,7 +6,7 @@ import React from "react";
 import {useEffect } from "react";
 
 
-const Login = () => {
+export default function Login () {
   const [error, setError] = React.useState(null);
   const router = useRouter()
   const { data: session, status } = useSession();
@@ -43,5 +43,5 @@ const Login = () => {
   );
 };
 
+Login.auth = false;
 
-export default Login;

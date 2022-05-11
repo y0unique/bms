@@ -12,14 +12,17 @@ export default async (req, res) => {
     const client = await clientPromise;
     const db = client.db("barangayDB");
     const collection = db.collection("inquiries");
-    // filter document with active status 
-    const inquiry = await collection.find().toArray();
+    // filter document with active 
+    // Find all inquiries wuth active and pending status
+    const inquiry = await collection.find({status: {$in: ["active", "pending"]}}).toArray();
+    
     // If there is error, return error message
     if (inquiry.length === 0) {
         res.statusCode = 404;
         res.json({ message: "No Inquiry record found." });
         return;
     }
+
    
     // Loop through the inquiry records
     // Find the resident name
@@ -31,6 +34,7 @@ export default async (req, res) => {
     }
     // If there is no error, return the data
     res.statusCode = 200;
+  
     return res.json(inquiry);
 }
 

@@ -26,7 +26,7 @@ const ResidentModal = ({form}) => {
           ></TextInput>
         </Grid.Col>
 
-        <Grid.Col span={6}>
+        <Grid.Col span={12}>
           <TextInput
             label="Address"
             {...form.getInputProps("address")}
@@ -37,10 +37,21 @@ const ResidentModal = ({form}) => {
           <Select
             label="Gender"
             data={[
-              { value: "male", label: "Male" },
-              { value: "female", label: "Female" },
+              { value: "Male", label: "Male" },
+              { value: "Female", label: "Female" },
             ]}
             {...form.getInputProps("gender")}
+          ></Select>
+        </Grid.Col>
+        
+        <Grid.Col span={6}>
+          <Select
+            label="Resident Type"
+            data={[
+              { value: "Permanent", label: "Permanent" },
+              { value: "Rental", label: "Rental" },
+            ]}
+            {...form.getInputProps("residentialType")}
           ></Select>
         </Grid.Col>
 

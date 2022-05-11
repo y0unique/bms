@@ -1,51 +1,54 @@
-import { Button, Grid, Group, Select, TextInput } from "@mantine/core";
+import { Button, Grid, Group, Select, SelectChevronIcon, TextInput } from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
 
 const InquiriesModal = ({form}) => {
   return (
     <>
       <Grid justify="center" grow>
+        
         <Grid.Col span={5}>
-          <TextInput
+          <Select
             label="Purpose"
             data={[
               { value: "Certificate", label: "Certificate" },
               { value: "Blotter", label: "Blotter" },
             ]}
             {...form.getInputProps("purpose")}
-          ></TextInput>
+          ></Select>
         </Grid.Col>
 
         <Grid.Col span={5}>
-          <TextInput
+          <Select
             label="Status"
+            data={[
+              { value: "pending", label: "pending" },
+              { value: "active", label: "active" },
+            ]}
             {...form.getInputProps("status")}
-          ></TextInput>
+          ></Select>
         </Grid.Col>
 
         <Grid.Col span={6}>
           <Select
             label="Type"
             data={[
+              { value: "Blotter", label: "Blotter" },
               { value: "Barangay Certificate", label: "Barangay Certificate" },
               { value: "Certificate of Indigency", label: "Certificate of Indigency" },
+              { value: "Barangay ID", label: "Barangay ID" },
             ]}
             {...form.getInputProps("type")}
           ></Select>
         </Grid.Col>
         
-        <Grid.Col span={6}>
-          <Select
+        <Grid.Col span={12}>
+          <TextInput
             label="Report"
-            data={[
-              { value: "Barangay Certificate", label: "Barangay Certificate" },
-              { value: "Certificate of Indigency", label: "Certificate of Indigency" },
-            ]}
             {...form.getInputProps("report")}
-          ></Select>
+          ></TextInput>
         </Grid.Col>
 
-        <Grid.Col span={4}>
+        <Grid.Col span={6}>
           <DatePicker
             label="Inquired Date"
             placeholder="Set Inquired Date"
@@ -55,7 +58,7 @@ const InquiriesModal = ({form}) => {
 
       </Grid>
       <Group position="right" mt="md">
-        <Button type="submit">Action</Button>
+        <Button type="submit">Submit</Button>
        
       </Group>
     </>

@@ -40,7 +40,7 @@ const Edit = ({ data, title, endpoint, schema, child}) => {
         title: "Error",
         message: result.message,
         icon: <Check />,
-        color: colorScheme === "light" ? "red" : "dark",
+        color: "red",
       });
     }
   }

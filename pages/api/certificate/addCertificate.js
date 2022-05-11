@@ -1,5 +1,6 @@
 import clientPromise from "../../../lib/mongodb";
 import { getSession } from "next-auth/react";
+var ObjectId = require('mongodb').ObjectId;
 
 export default async (req, res) => {
     const session = await getSession({ req });
@@ -26,9 +27,11 @@ export default async (req, res) => {
         const result = await collection.insertOne({
             type: req.body.type,
             dateSubmitted: req.body.dateSubmitted,
-            status: "active"
+            status: "active",
+            resident: req.body.resident,
         });
         // send result
+        console.log(result);
         return res.json({message:result})
 
     }

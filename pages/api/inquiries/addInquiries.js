@@ -4,7 +4,6 @@ var ObjectId = require("mongodb").ObjectId;
 
 export default async (req, res) => {
   const session = await getSession({ req });
-  console.log(session.user.user.resident);
   if (!session) {
     res.statusCode = 401;
     res.json({ message: "You are not signed in." });
@@ -20,7 +19,6 @@ export default async (req, res) => {
     if (
       req.body.purpose === "" ||
       req.body.report === "" ||
-      req.body.status === "" ||
       req.body.dateInquired === "" ||
       req.body.type === ""
     ) {
@@ -34,7 +32,7 @@ export default async (req, res) => {
       report: req.body.report,
       type: req.body.type,
       dateInquired: req.body.dateInquired,
-      status: "active",
+      status: "pending",
     });
     // send result
     return res.json({ message: result });

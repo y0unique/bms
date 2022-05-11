@@ -42,7 +42,6 @@ export default NextAuth({
   ],
   callbacks: {
     async session({ session, token }) {
-      
       session.user = token.user;
       if (token?.resident) {
         session.user.resident = token.resident
@@ -68,7 +67,6 @@ export default NextAuth({
   },
   session: {
     strategy: "jwt",
-
   },
   pages: {
     signIn: "/auth/login",

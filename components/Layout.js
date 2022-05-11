@@ -34,7 +34,7 @@ const Layout = ({ children }) => {
       navbarOffsetBreakpoint="sm"
       header={
         <Header height={70}>
-          {<HeaderAction opened={opened} toggleOpened={toggleOpened} />}
+          {<HeaderAction opened={!opened} toggleOpened={toggleOpened} />}
         </Header>
       }
       styles={(theme) => ({

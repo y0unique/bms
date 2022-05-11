@@ -24,7 +24,9 @@ export default async (req, res) => {
                 middlename: req.body.middlename,
                 lastname: req.body.lastname,
                 birthdate: req.body.birthdate,
+                gender: req.body.gender,
                 residencyDate: req.body.residencyDate,
+                residentialType: req.body.residentialType,
                 address: req.body.address,
             }},
             function(err, result) {

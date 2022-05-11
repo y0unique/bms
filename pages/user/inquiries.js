@@ -7,13 +7,14 @@ import {
   Button,
   TextInput,
   Select,
+  ActionIcon,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { DatePicker } from "@mantine/dates";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
-import { Check } from "tabler-icons-react";
+import { Check, Note, Notes } from "tabler-icons-react";
 import { z } from "zod";
 import { useForm, zodResolver } from "@mantine/form";
 
@@ -21,7 +22,6 @@ import Layout from "../../components/Layout";
 
 const InquiriesRecords = () => {
   const [selectedID, setSelectedID] = useState("");
-
 
   const schema = z.object({
     purpose: z.string().min(1, { message: "Purpose could not be empty" }),
@@ -45,40 +45,36 @@ const InquiriesRecords = () => {
     initialValues: initialValues,
   });
 
-
   const { data: session } = useSession();
 
   if (!session) return <div>Loading...</div>;
 
-  
-const handleSubmit= async (values) => {
-  const result = await fetch("/api/inquiries/addInquiries", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(values),
-  }).then((response) => response.json());
+  const handleSubmit = async (values) => {
+    const result = await fetch("/api/inquiries/addInquiries", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    }).then((response) => response.json());
 
-  //If result message is success, then show notification
-  if (result.message.acknowledged === true) {
-    showNotification({
-      title: `Submitted `,
-      message: "Submitted Successfully",
-      icon: <Check />,
-      color: "teal",
-    });
-
-    
-  } else {
-    showNotification({
-      title: "Error",
-      message: result.message,
-      icon: <Check />,
-      color: colorScheme === "light" ? "red" : "dark",
-    });
-  }
-}
+    //If result message is success, then show notification
+    if (result.message.acknowledged === true) {
+      showNotification({
+        title: `Submitted `,
+        message: "Submitted Successfully",
+        icon: <Check />,
+        color: "teal",
+      });
+    } else {
+      showNotification({
+        title: "Error",
+        message: result.message,
+        icon: <Check />,
+        color: "red",
+      });
+    }
+  };
   return (
     <Layout>
       {!session && (
@@ -93,36 +89,36 @@ const handleSubmit= async (values) => {
           </Grid>
         </>
       )}
-      {session  && (
+      {session && (
         <>
           <Grid mt={12} justify="center" align="center">
             <Grid.Col span={10}>
-              <Card>
-                <Title mb={6}>Inquiries Records</Title>
+              <Group spacing={"10px"}>
+                <Title mb={6}>Request Document</Title>
+                <ActionIcon>
+                  <Notes size={60} strokeWidth={2} />
+                </ActionIcon>
+              </Group>
 
+              <Text mb={20}>Please fill out the following form</Text>
+              <Card>
                 <Grid justify="center" grow>
                   <Grid.Col span={5}>
-                    <TextInput
+                    <Select
                       label="Purpose"
                       data={[
                         { value: "Certificate", label: "Certificate" },
                         { value: "Blotter", label: "Blotter" },
                       ]}
                       {...form.getInputProps("purpose")}
-                    ></TextInput>
-                  </Grid.Col>
-
-                  <Grid.Col span={5}>
-                    <TextInput
-                      label="Status"
-                      {...form.getInputProps("status")}
-                    ></TextInput>
+                    ></Select>
                   </Grid.Col>
 
                   <Grid.Col span={6}>
                     <Select
                       label="Type"
                       data={[
+                        { value: "Blotter", label: "Blotter" },
                         {
                           value: "Barangay Certificate",
                           label: "Barangay Certificate",
@@ -131,49 +127,37 @@ const handleSubmit= async (values) => {
                           value: "Certificate of Indigency",
                           label: "Certificate of Indigency",
                         },
+                        { value: "Barangay ID", label: "Barangay ID" },
                       ]}
                       {...form.getInputProps("type")}
                     ></Select>
                   </Grid.Col>
 
-                  <Grid.Col span={6}>
-                    <Select
+                  <Grid.Col span={12}>
+                    <TextInput
                       label="Report"
-                      data={[
-                        {
-                          value: "Barangay Certificate",
-                          label: "Barangay Certificate",
-                        },
-                        {
-                          value: "Certificate of Indigency",
-                          label: "Certificate of Indigency",
-                        },
-                      ]}
                       {...form.getInputProps("report")}
-                    ></Select>
+                    ></TextInput>
                   </Grid.Col>
 
-                  <Grid.Col span={4}>
+                  <Grid.Col span={6}>
                     <DatePicker
                       label="Inquired Date"
                       placeholder="Set Inquired Date"
                       {...form.getInputProps("dateInquired", { type: "date" })}
                     ></DatePicker>
                   </Grid.Col>
-                  <Grid.Col>
-                    <Group position=" right">
-                      <Button
-                        onClick={form.onSubmit(
-                          async (values) =>
-                            await handleSubmit(values)
-                        )}
-                        variant="light"
-                      >
-                        Submit 
-                      </Button>
-                    </Group>
-                  </Grid.Col>
                 </Grid>
+                <Group position="right" mt="md">
+                  <Button
+                    type="submit"
+                    onClick={() => {
+                      handleSubmit(form.values);
+                    }}
+                  >
+                    Submit
+                  </Button>
+                </Group>
               </Card>
             </Grid.Col>
           </Grid>

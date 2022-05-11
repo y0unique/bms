@@ -117,14 +117,14 @@ const CertificateRecords = () => {
                 <Title mb={6}>Certificate Records</Title>
 
                 <Group>
-                  <Add
+                  {/* <Add
                     title="Certificate"
                     schema={schema}
                     form={form}
                     endpoint="/api/certificate/addCertificate"
                     initialValues={initialValues}
                     child={<CertificateModal form={form}/>}
-                  />
+                  /> */}
                   <Delete
                     selectedID={selectedID}
                     title="Certificate"

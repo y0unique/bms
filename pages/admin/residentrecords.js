@@ -23,9 +23,10 @@ const ResidentRecords = () => {
     firstname: z.string().min(1, { message: "Name could not be empty" }),
     middlename: z.string().default("test"),
     lastname: z.string().min(1, { message: "Lastname could not be empty" }),
+    residentialType: z.enum(["Permanent", "Rental"]),
     address: z.string().min(1, { message: "Address could not be empty" }),
     birthdate: z.date(),
-    gender: z.enum(["male", "female"]),
+    gender: z.enum(["Male", "Female"]),
     residencyDate: z.date(),
   });
 
@@ -33,6 +34,7 @@ const ResidentRecords = () => {
     firstname: "",
     middlename: "",
     lastname: "",
+    residentialType: "",
     address: "",
     birthdate: "",
     gender: "",
@@ -63,6 +65,10 @@ const ResidentRecords = () => {
         const diff = now.diff(birth, "years");
         return diff;
       },
+    },
+    {
+      Header: "Residential Type",
+      accessor: "residentialType",
     },
     {
       Header: "Address",

@@ -117,14 +117,14 @@ const BlotterRecords = () => {
                 <Title mb={6}>Blotter Records</Title>
 
                 <Group>
-                  <Add
+                  {/* <Add
                     title="Blotter"
                     schema={schema}
                     form={form}
                     endpoint="/api/blotter/addBlotter"
                     initialValues={initialValues}
                     child={<BlotterModal form={form}/>}
-                  />
+                  /> */}
                   <Delete
                     selectedID={selectedID}
                     title="Blotter"

@@ -89,7 +89,6 @@ export function Sidebar() {
       component="a"
       key={item.label}
       underline={false}
-    
       onClick={(event) => {
         //event.preventDefault();
         setActive(item.label);
