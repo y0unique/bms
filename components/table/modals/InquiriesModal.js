@@ -1,53 +1,65 @@
-import { Button, Grid, Group, Select, TextInput } from "@mantine/core";
+import { Button, Grid, Group, Select, SelectChevronIcon, TextInput } from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
 
 const InquiriesModal = ({form}) => {
   return (
     <>
       <Grid justify="center" grow>
-      <Grid.Col span={4}>
-          <TextInput
+        
+        <Grid.Col span={5}>
+          <Select
             label="Purpose"
+            data={[
+              { value: "Certificate", label: "Certificate" },
+              { value: "Blotter", label: "Blotter" },
+            ]}
             {...form.getInputProps("purpose")}
-          ></TextInput>
-        </Grid.Col>
-       <Grid.Col span={4}>
-          <TextInput
-            label="Report"
-            {...form.getInputProps("report")}
-          ></TextInput>
+          ></Select>
         </Grid.Col>
 
-        <Grid.Col span={4}>
-          <TextInput
+        <Grid.Col span={5}>
+          <Select
             label="Status"
+            data={[
+              { value: "pending", label: "pending" },
+              { value: "active", label: "active" },
+            ]}
             {...form.getInputProps("status")}
-          ></TextInput>
+          ></Select>
         </Grid.Col>
 
         <Grid.Col span={6}>
           <Select
             label="Type"
             data={[
+              { value: "Blotter", label: "Blotter" },
               { value: "Barangay Certificate", label: "Barangay Certificate" },
               { value: "Certificate of Indigency", label: "Certificate of Indigency" },
+              { value: "Barangay ID", label: "Barangay ID" },
             ]}
             {...form.getInputProps("type")}
           ></Select>
         </Grid.Col>
+        
+        <Grid.Col span={12}>
+          <TextInput
+            label="Report"
+            {...form.getInputProps("report")}
+          ></TextInput>
+        </Grid.Col>
 
-        <Grid.Col span={4}>
+        <Grid.Col span={6}>
           <DatePicker
-
-            placeholder="Set Date"
             label="Inquired Date"
-            {...form.getInputProps("dateInquired")}
-          />
+            placeholder="Set Inquired Date"
+            {...form.getInputProps("dateInquired", { type: "date" })}
+          ></DatePicker>
         </Grid.Col>
 
       </Grid>
       <Group position="right" mt="md">
         <Button type="submit">Submit</Button>
+       
       </Group>
     </>
     

@@ -5,48 +5,64 @@ import { useState } from "react";
 import useSWR from "swr";
 import moment from "moment";
 import { z } from "zod";
+import { useForm, zodResolver } from "@mantine/form";
 
-import Layout from "../components/Layout";
-import Add from "../components/table/buttons/Add";
-import Delete from "../components/table/buttons/Delete";
-import Edit from "../components/table/buttons/Edit";
-import ReactTable from "../components/table/ReactTable";
+import Layout from "../../components/Layout";
+import Add from "../../components/table/buttons/Add";
+import Delete from "../../components/table/buttons/Delete";
+import Edit from "../../components/table/buttons/Edit";
+import ReactTable from "../../components/table/ReactTable";
 
-import InquiriesModal from "../components/table/modals/InquiriesModal";
+import BlotterModal from "../../components/table/modals/BlotterModal";
 
-const InquiriesRecords = () => {
+const BlotterRecords = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const [selectedID, setSelectedID] = useState("");
 
   const schema = z.object({
-    purpose: z.string().min(1, { message: "Purpose could not be empty" }),
-    report: z.string().min(1, { message: "Report could not be empty" }),
-    status: z.string().min(1, { message: "Status could not be empty" }),
-    type: z.enum(["Barangay Certificate", "Certificate of Indigency"]),
-    dateInquired: z.date(),
+    report: z.string().min(1, { message: "could not be empty" }),
+    dateRecord: z.date(),
   });
 
   const initialValues = {
-    purpose: "",
     report: "",
-    status: "",
-    type: "",
-    dateInquired: "",
+    dateRecord: "",
   };
 
+    
+  const form = useForm({
+    schema: zodResolver(schema),
+    initialValues: initialValues,
+    });
+ 
   const columns = [
+    // {
+    //   Header: "Name",
+    //   accessor: "firstname",
+    //   Cell: (props) => {
+    //     return `${props.row.original.firstname} ${props.row.original.middlename}
+    //    ${props.row.original.lastname}`;
+    //   },
+    // },
+    // {
+    //   Header: "Age",
+    //   accessor: "age",
+    //   Cell: (props) => {
+    //     const now = moment();
+    //     const birth = moment(props.row.original.birthdate);
+    //     const diff = now.diff(birth, "years");
+    //     return diff;
+    //   },
+    // },
     {
-      Header: "Type",
-      accessor: "type",
-      Cell: (props) => {
-        return `${props.row.original.type}`;
-      },
+      Header: "Report",
+      accessor: "report",
     },
     {
-      Header: "Date Submitted",
-      accessor: "dateSubmitted",
-      Cell: (props) => {   
-        return new Date(props.row.original.dateSubmitted).toLocaleDateString();
+      Header: "Record Date",
+      accessor: "dateRecord",
+      Cell: (props) => {
+        return moment(props.row.original.dateRecord).format("MM-DD-YYYY");
       },
     },
     {
@@ -54,17 +70,17 @@ const InquiriesRecords = () => {
       accessor: "action",
       Cell: (props) => {
         // Convert strings to dates to render in modal
-        props.row.original.dateInquired = new Date(props.row.original.dateInquired);
-        props.row.original.dateInquired = new Date(
-          props.row.original.dateInquired
+        props.row.original.dateRecord = new Date(props.row.original.dateRecord);
+        props.row.original.dateRecord = new Date(
+          props.row.original.dateRecord
         );
         return (
           <Edit
             data={props.row.original}
             schema={schema}
-            title="Inquiries"
-            endpoint="/api/inquiries/updateInquiries"
-            child={<InquiriesModal />}
+            title="Blotter"
+            endpoint="/api/blotter/updateBlotter"
+            child={<BlotterModal form={form}/>}
           />
         );
       },
@@ -72,7 +88,7 @@ const InquiriesRecords = () => {
   ];
 
   const { data: session } = useSession();
-  const { data, error } = useSWR("/api/inquiries/getInquiries", fetcher, {
+  const { data, error } = useSWR("/api/blotter/getBlotter", fetcher, {
     refreshInterval: 500,
   });
 
@@ -98,19 +114,21 @@ const InquiriesRecords = () => {
           <Grid mt={12}>
             <Grid.Col span={12}>
               <Card>
-                <Title mb={6}>Inquiries Records</Title>
+                <Title mb={6}>Blotter Records</Title>
 
                 <Group>
-                  <Add
-                    title="Inquiries"
+                  {/* <Add
+                    title="Blotter"
                     schema={schema}
-                    endpoint="/api/inquiries/addInquiries"
+                    form={form}
+                    endpoint="/api/blotter/addBlotter"
                     initialValues={initialValues}
-                  />
+                    child={<BlotterModal form={form}/>}
+                  /> */}
                   <Delete
                     selectedID={selectedID}
-                    title="Inquiries"
-                    endpoint="/api/inquiries/deleteInquiries"
+                    title="Blotter"
+                    endpoint="/api/blotter/deleteBlotter"
                   />
                 </Group>
 
@@ -129,7 +147,7 @@ const InquiriesRecords = () => {
   );
 };
 
-export default InquiriesRecords;
+export default BlotterRecords;
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);

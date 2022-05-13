@@ -5,14 +5,15 @@ import { useState } from "react";
 import useSWR from "swr";
 import moment from "moment";
 import { z } from "zod";
+import { useForm, zodResolver } from "@mantine/form";
 
-import Layout from "../components/Layout";
-import Add from "../components/table/buttons/Add";
-import Delete from "../components/table/buttons/Delete";
-import Edit from "../components/table/buttons/Edit";
-import ReactTable from "../components/table/ReactTable";
+import Layout from "../../components/Layout";
+import Add from "../../components/table/buttons/Add";
+import Delete from "../../components/table/buttons/Delete";
+import Edit from "../../components/table/buttons/Edit";
+import ReactTable from "../../components/table/ReactTable";
 
-import ResidentModal from "../components/table/modals/ResidentModal";
+import ResidentModal from "../../components/table/modals/ResidentModal";
 
 const ResidentRecords = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -22,9 +23,10 @@ const ResidentRecords = () => {
     firstname: z.string().min(1, { message: "Name could not be empty" }),
     middlename: z.string().default("test"),
     lastname: z.string().min(1, { message: "Lastname could not be empty" }),
+    residentialType: z.enum(["Permanent", "Rental"]),
     address: z.string().min(1, { message: "Address could not be empty" }),
     birthdate: z.date(),
-    gender: z.enum(["male", "female"]),
+    gender: z.enum(["Male", "Female"]),
     residencyDate: z.date(),
   });
 
@@ -32,6 +34,7 @@ const ResidentRecords = () => {
     firstname: "",
     middlename: "",
     lastname: "",
+    residentialType: "",
     address: "",
     birthdate: "",
     gender: "",
@@ -39,6 +42,10 @@ const ResidentRecords = () => {
   };
 
     
+  const form = useForm({
+    schema: zodResolver(schema),
+    initialValues: initialValues,
+    });
  
   const columns = [
     {
@@ -58,6 +65,10 @@ const ResidentRecords = () => {
         const diff = now.diff(birth, "years");
         return diff;
       },
+    },
+    {
+      Header: "Residential Type",
+      accessor: "residentialType",
     },
     {
       Header: "Address",
@@ -89,7 +100,7 @@ const ResidentRecords = () => {
             schema={schema}
             title="Resident"
             endpoint="/api/resident/updateResident"
-            child={<ResidentModal />}
+            child={<ResidentModal form={form}/>}
           />
         );
       },
@@ -129,8 +140,10 @@ const ResidentRecords = () => {
                   <Add
                     title="Resident"
                     schema={schema}
+                    form={form}
                     endpoint="/api/resident/addResident"
                     initialValues={initialValues}
+                    child={<ResidentModal form={form}/>}
                   />
                   <Delete
                     selectedID={selectedID}

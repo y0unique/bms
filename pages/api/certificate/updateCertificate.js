@@ -13,12 +13,25 @@ export default async (req, res) => {
         console.log(req.body.id);
         const client = await clientPromise;
         const db = client.db("barangayDB");
-        const collection = db.collection("inquiries");
+        const collection = db.collection("documents");
         let o_id = new ObjectId(req.body);
-        const inquiries = await collection.findOne({_id:o_id});
         
-        console.log(inquiries);
-        return res.json(inquiries);
+        //Update document with o_id
+        collection.updateOne(
+            { _id: o_id },
+            { $set: {
+                type: req.body.type,
+                dateSubmitted: req.body.dateSubmitted,
+            }},
+            function(err, result) {
+                if (err) throw err;
+                console.log("1 document updated");
+                console.log(result);
+                return res.json(result);
+            }
+        );
+            
+        
     }
     
 

@@ -12,34 +12,33 @@ export default async (req, res) => {
     if (req.method === "POST") {
         const client = await clientPromise;
         const db = client.db("barangayDB");
-        const resident = db.collection("resident");
+        const activity = db.collection("activies");
         // Insert document into collection
         // Check if one of the fields is empty
         if (
-            req.body.firstname === "" ||
-            req.body.lastname === "" ||
-            req.body.residentialType === "" ||
-            req.body.address === "" || 
-            req.body.birthdate === "" ||
-            req.body.residencyDate === "" ||
-            req.body.gender === "" 
+            req.body.what === "" ||
+            req.body.where === "" ||
+            req.body.when === "" || 
+            req.body.why === "" ||
+            req.body.how === "" ||
+            req.body.who === "" 
         ) {
             res.statusCode = 400;
             res.json({ message: "One of the fields is empty." });
             return;
         }
-        const result = await resident.insertOne({
-            firstname: req.body.firstname,
-            middlename: req.body.middlename,    
-            lastname: req.body.lastname,
-            residentialType: req.body.residentialType,
-            address: req.body.address,
-            birthdate: req.body.birthdate,
-            gender: req.body.gender,
-            residencyDate: req.body.residencyDate,
+        console.log(req.body);
+        const result = await activity.insertOne({
+            what: req.body.what,
+            where: req.body.where,    
+            why: req.body.why,
+            how: req.body.how,
+            who: req.body.who,
+            when: req.body.when,
             status: "active"
         });
         // send result
+        console.log(req.body);
         return res.json({message:result})
 
     }

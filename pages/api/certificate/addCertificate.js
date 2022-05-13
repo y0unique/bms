@@ -1,5 +1,6 @@
 import clientPromise from "../../../lib/mongodb";
 import { getSession } from "next-auth/react";
+var ObjectId = require('mongodb').ObjectId;
 
 export default async (req, res) => {
     const session = await getSession({ req });
@@ -12,34 +13,25 @@ export default async (req, res) => {
     if (req.method === "POST") {
         const client = await clientPromise;
         const db = client.db("barangayDB");
-        const resident = db.collection("resident");
+        const collection = db.collection("documents");
         // Insert document into collection
         // Check if one of the fields is empty
         if (
-            req.body.firstname === "" ||
-            req.body.lastname === "" ||
-            req.body.residentialType === "" ||
-            req.body.address === "" || 
-            req.body.birthdate === "" ||
-            req.body.residencyDate === "" ||
-            req.body.gender === "" 
+            req.body.type === "" ||
+            req.body.dateSubmitted === ""
         ) {
             res.statusCode = 400;
             res.json({ message: "One of the fields is empty." });
             return;
         }
-        const result = await resident.insertOne({
-            firstname: req.body.firstname,
-            middlename: req.body.middlename,    
-            lastname: req.body.lastname,
-            residentialType: req.body.residentialType,
-            address: req.body.address,
-            birthdate: req.body.birthdate,
-            gender: req.body.gender,
-            residencyDate: req.body.residencyDate,
-            status: "active"
+        const result = await collection.insertOne({
+            type: req.body.type,
+            dateSubmitted: req.body.dateSubmitted,
+            status: "active",
+            resident: req.body.resident,
         });
         // send result
+        console.log(result);
         return res.json({message:result})
 
     }

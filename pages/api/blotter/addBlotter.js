@@ -12,31 +12,20 @@ export default async (req, res) => {
     if (req.method === "POST") {
         const client = await clientPromise;
         const db = client.db("barangayDB");
-        const resident = db.collection("resident");
+        const collection = db.collection("blotter");
         // Insert document into collection
         // Check if one of the fields is empty
         if (
-            req.body.firstname === "" ||
-            req.body.lastname === "" ||
-            req.body.residentialType === "" ||
-            req.body.address === "" || 
-            req.body.birthdate === "" ||
-            req.body.residencyDate === "" ||
-            req.body.gender === "" 
+            req.body.report === "" ||
+            req.body.dateRecord === ""
         ) {
             res.statusCode = 400;
             res.json({ message: "One of the fields is empty." });
             return;
         }
-        const result = await resident.insertOne({
-            firstname: req.body.firstname,
-            middlename: req.body.middlename,    
-            lastname: req.body.lastname,
-            residentialType: req.body.residentialType,
-            address: req.body.address,
-            birthdate: req.body.birthdate,
-            gender: req.body.gender,
-            residencyDate: req.body.residencyDate,
+        const result = await collection.insertOne({
+            report: req.body.report,
+            dateRecord: req.body.dateRecord,
             status: "active"
         });
         // send result

@@ -2,9 +2,7 @@ import { Anchor, createStyles, Navbar } from '@mantine/core';
 import { signOut } from "next-auth/react";
 import Link from 'next/link';
 import React, { useState } from 'react';
-import {
-  Activity, Certificate, Home, Logout, Notes, QuestionMark, Settings, Users,BrandHipchat
-} from 'tabler-icons-react';
+import { Home, Logout, QuestionMark, Settings,BrandHipchat } from 'tabler-icons-react';
 // import { MantineLogo } from '../../shared/MantineLogo';
 
 const useStyles = createStyles((theme, _params, getRef) => {
@@ -70,15 +68,11 @@ const useStyles = createStyles((theme, _params, getRef) => {
 
 const data = [
   { link: '/', label: 'Home', icon: Home },
-  { link: '/admin/residentrecords', label: 'Residents Records', icon: Users },
-  { link: '/admin/blotterrecords', label: 'Blotter Records', icon: Notes },
-  { link: '/admin/certificates', label: 'Certificates', icon: Certificate },
-  { link: '/admin/activity', label: 'Activity', icon: Activity },
-  { link: '/admin/inquiries', label: 'Inquiries', icon: QuestionMark },
+  { link: '/user/inquiries', label: 'Inquiries', icon: QuestionMark },
   { link: '/user/chats', label: 'Chats', icon: BrandHipchat },
 ];
 
-export function Sidebar() {
+export function SidebarUser() {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('');
 
@@ -89,6 +83,7 @@ export function Sidebar() {
       component="a"
       key={item.label}
       underline={false}
+    
       onClick={(event) => {
         //event.preventDefault();
         setActive(item.label);

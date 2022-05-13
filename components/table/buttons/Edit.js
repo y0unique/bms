@@ -40,7 +40,7 @@ const Edit = ({ data, title, endpoint, schema, child}) => {
         title: "Error",
         message: result.message,
         icon: <Check />,
-        color: colorScheme === "light" ? "red" : "dark",
+        color: "red",
       });
     }
   }
@@ -58,11 +58,7 @@ const Edit = ({ data, title, endpoint, schema, child}) => {
     <Modal
         opened={opened}
         onClose={() => setOpened(false)}
-<<<<<<< HEAD
-        title={`Edit ${title} Record`}
-=======
         title={`Edit ${title} Records`}
->>>>>>> dc84ad49a73448504ec0c686cd30c14531fa8c01
         centered
         size="lg"
       >

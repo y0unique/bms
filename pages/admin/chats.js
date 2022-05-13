@@ -1,4 +1,3 @@
-
 import { Card, Grid, Group, Text, Title } from "@mantine/core";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -7,15 +6,14 @@ import useSWR from "swr";
 import moment from "moment";
 import { z } from "zod";
 import { useForm, zodResolver } from "@mantine/form";
-import FormModal from "../components/table/modals/ResidentModal";
 
-import Layout from "../components/Layout";
-import Add from "../components/table/buttons/Add";
-import Delete from "../components/table/buttons/Delete";
-import Edit from "../components/table/buttons/Edit";
-import ReactTable from "../components/table/ReactTable";
+import Layout from "../../components/Layout";
+import Add from "../../components/table/buttons/Add";
+import Delete from "../../components/table/buttons/Delete";
+import Edit from "../../components/table/buttons/Edit";
+import ReactTable from "../../components/table/ReactTable";
 
-import ResidentModal from "../components/table/modals/ResidentModal";
+import ResidentModal from "../../components/table/modals/ResidentModal";
 
 const ResidentRecords = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -41,23 +39,44 @@ const ResidentRecords = () => {
     residencyDate: "",
   };
 
+    
   const form = useForm({
     schema: zodResolver(schema),
     initialValues: initialValues,
     });
+ 
   const columns = [
     {
-      Header: "Type",
-      accessor: "type",
+      Header: "Name",
+      accessor: "firstname",
       Cell: (props) => {
-        return `${props.row.original.type}`;
+        return `${props.row.original.firstname} ${props.row.original.middlename}
+       ${props.row.original.lastname}`;
       },
     },
     {
-      Header: "Date Submitted",
-      accessor: "dateSubmitted",
-      Cell: (props) => {   
-        return new Date(props.row.original.dateSubmitted).toLocaleDateString();
+      Header: "Age",
+      accessor: "age",
+      Cell: (props) => {
+        const now = moment();
+        const birth = moment(props.row.original.birthdate);
+        const diff = now.diff(birth, "years");
+        return diff;
+      },
+    },
+    {
+      Header: "Address",
+      accessor: "address",
+    },
+    {
+      Header: "Gender",
+      accessor: "gender",
+    },
+    {
+      Header: "Residency Date",
+      accessor: "residencyDate",
+      Cell: (props) => {
+        return moment(props.row.original.residencyDate).format("MM-DD-YYYY");
       },
     },
     {
@@ -73,9 +92,9 @@ const ResidentRecords = () => {
           <Edit
             data={props.row.original}
             schema={schema}
-            title="Certificate"
+            title="Resident"
             endpoint="/api/resident/updateResident"
-            child={<ResidentModal />}
+            child={<ResidentModal form={form}/>}
           />
         );
       },
@@ -83,7 +102,7 @@ const ResidentRecords = () => {
   ];
 
   const { data: session } = useSession();
-  const { data, error } = useSWR("/api/certificate/getCertificates", fetcher, {
+  const { data, error } = useSWR("/api/resident/getResidents", fetcher, {
     refreshInterval: 500,
   });
 
@@ -109,19 +128,21 @@ const ResidentRecords = () => {
           <Grid mt={12}>
             <Grid.Col span={12}>
               <Card>
-                <Title mb={6}>Certificate Records</Title>
+                <Title mb={6}>Resident Records</Title>
 
                 <Group>
                   <Add
-                    title="Certificate" 
-                    endpoint="/api/certificate/addCertificate"       
-                    child={ <FormModal form={form} />}
+                    title="Resident"
+                    schema={schema}
                     form={form}
+                    endpoint="/api/resident/addResident"
+                    initialValues={initialValues}
+                    child={<ResidentModal form={form}/>}
                   />
                   <Delete
                     selectedID={selectedID}
-                    title="Certificate"
-                    endpoint="/api/certificate/deleteCertificate"
+                    title="Resident"
+                    endpoint="/api/resident/deleteResident"
                   />
                 </Group>
 
@@ -158,4 +179,3 @@ export async function getServerSideProps(context) {
     },
   };
 }
-

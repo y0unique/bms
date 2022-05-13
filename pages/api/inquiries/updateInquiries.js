@@ -1,6 +1,6 @@
 import clientPromise from "../../../lib/mongodb";
 import { getSession } from "next-auth/react";
-var ObjectId = require('mongodb').ObjectId; 
+var ObjectId = require('mongodb').ObjectId;
 
 export default async (req, res) => {
     const session = await getSession({ req });
@@ -10,14 +10,14 @@ export default async (req, res) => {
         return;
     }
     if (req.method === "POST") { 
-        console.log(req.body.id);
+        console.log(req.body);
         const client = await clientPromise;
         const db = client.db("barangayDB");
-        const collection = db.collection("inquiries");
+        const inquiries = db.collection("inquiries");
         let o_id = new ObjectId(req.body);
         
         //Update document with o_id
-        collection.updateOne(
+        inquiries.updateOne(
             { _id: o_id },
             { $set: {
                 purpose: req.body.purpose,
@@ -31,10 +31,35 @@ export default async (req, res) => {
                 if (err) throw err;
                 console.log("1 document updated");
                 console.log(result);
-                return res.json(result);
             }
         );
-            
+        
+        if (req.body.status == "active" && req.body.purpose == "Certificate") {
+          
+            const documents = db.collection("documents");
+            const result = await documents.insertOne({
+                type: req.body.type,
+                dateSubmitted:  new Date(),
+                status: "active",
+                resident: ObjectId(req.body.resident._id),
+                type: req.body.type,
+            });
+            console.log(result);
+            return res.json(result)
+        }
+        if (req.body.status == "active" && req.body.purpose == "Blotter") {
+          
+            const blotter = db.collection("blotter");
+            const result = await blotter.insertOne({
+                dateRecord:  new Date(),
+                status: "active",
+                resident: ObjectId(req.body.resident._id),
+                report: req.body.report,
+            });
+            console.log(result);
+            return res.json(result)
+        }
+
         
     }
     
