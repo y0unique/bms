@@ -22,7 +22,7 @@ import { useForm, zodResolver } from "@mantine/form";
 import { Send } from "tabler-icons-react";
 import Layout from "../../components/Layout";
 import { ChatWindow, UserList } from "../../components/chat";
-import io from "Socket.IO-client";
+import io from "socket.io-client";
 
 const useStyles = createStyles((theme) => ({
   send: {
