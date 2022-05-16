@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import { Text } from "@mantine/core";
+
 
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
@@ -34,8 +35,8 @@ const renderCustomizedLabel = ({
 export default function AgeBracket() {
 
   const [data, setData] = useState([]);
-   useMemo(() => {
-    fetch("/api/analytics/getAgeBracket")
+   useEffect(() => {
+    fetch("api/analytics/getAgeBracket")
         .then(res => res.json())
         .then(data => {
             setData(data);

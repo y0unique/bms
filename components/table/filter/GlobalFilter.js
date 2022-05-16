@@ -7,7 +7,7 @@ const GlobalFilter = ({ filter, setGlobalFilter }) => {
   };
   return (
     // Create a search input
-    <Group position="right" mb={20}>
+    <Group position="right" m={20}>
       <TextInput
         icon={<Search size={14} />}
         placeholder="Search"
@@ -18,8 +18,7 @@ const GlobalFilter = ({ filter, setGlobalFilter }) => {
         value={filter ? filter.value : ""}
         rightSection={
           <ActionIcon onClick={handleClear}>
-            {" "}
-            <RotateClockwise size={14} />{" "}
+            <RotateClockwise size={14} />
           </ActionIcon>
         }
       />

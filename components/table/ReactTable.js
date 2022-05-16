@@ -1,4 +1,4 @@
-import { Table, Pagination, Checkbox } from "@mantine/core";
+import { Table, Pagination, Checkbox, ScrollArea} from "@mantine/core";
 import { useMemo, forwardRef, useRef, useEffect} from "react";
 import { useTable, useSortBy, useGlobalFilter, usePagination, useRowSelect  } from "react-table";
 import moment from "moment";
@@ -88,8 +88,9 @@ const ReactTable = ({ data, setSelectedID, schema, cols }) => {
 
   return (
     <>
+     <ScrollArea>
     <GlobalFilter setGlobalFilter={setGlobalFilter}  filter={globalFilter}/>
-      <Table {...getTableProps()}  highlightOnHover   >
+      <Table {...getTableProps()}  highlightOnHover sx={{ minWidth: 800 }} >
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -114,10 +115,12 @@ const ReactTable = ({ data, setSelectedID, schema, cols }) => {
           })}
         </tbody>
       </Table>
+      </ScrollArea>
       <Pagination
         page={pageIndex + 1}
         total={pageCount}
         onChange={handlePageChange}
+        m={20}
       />
      
     </>

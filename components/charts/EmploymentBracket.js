@@ -1,7 +1,8 @@
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import { Text } from "@mantine/core";
+
 
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
@@ -35,8 +36,8 @@ const renderCustomizedLabel = ({
 export default function EmploymentBracket() {
 
   const [data, setData] = useState([]);
-   useMemo(() => {
-    fetch("/api/analytics/getEmploymentBracket")
+   useEffect(() => {
+    fetch("api/analytics/getEmploymentBracket")
         .then(res => res.json())
         .then(data => {
             setData(data);
