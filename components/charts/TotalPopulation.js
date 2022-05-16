@@ -1,5 +1,5 @@
 import { createStyles, Group, Paper, SimpleGrid, Text } from '@mantine/core';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   GenderFemale,
   GenderMale,
@@ -49,8 +49,8 @@ export default function TotalPopulation() {
 
   const [residents, setResident] = useState([]);
   
-   useMemo(() => {
-    fetch("/api/resident/getResidents")
+   useEffect(() => {
+    fetch("api/resident/getResidents")
         .then(res => res.json())
         .then(data => {
             setResident(data);

@@ -11,7 +11,6 @@ import Fonts from "../components/Fonts";
 
 function MyApp({ Component, pageProps: { session, colorScheme, ...pageProps } }) {
   const [acolorScheme, setColorScheme] = useState(colorScheme);
-  console.log(colorScheme);
   const toggleColorScheme = (value) =>
     setColorScheme(value || (acolorScheme === "dark" ? "light" : "dark"));
   return (

@@ -157,6 +157,7 @@ const ResidentRecords = () => {
                   cols={columns}
                   schema={schema}
                   setSelectedID={setSelectedID}
+                  
                 />
               </Card>
             </Grid.Col>
