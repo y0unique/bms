@@ -1,28 +1,13 @@
 import {
-  Card,
-  Grid,
-  Group,
-  Stack,
-  Text,
-  Title,
-  Avatar,
-  Paper,
-  TextInput,
-  ActionIcon,
-  createStyles,
-  ScrollArea,
+  ActionIcon, Avatar, Card, createStyles, Grid,
+  Group, Paper, ScrollArea, Text, TextInput, Title
 } from "@mantine/core";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
-import useSWR from "swr";
-import moment from "moment";
-import { z } from "zod";
-import { useForm, zodResolver } from "@mantine/form";
+import Pusher from "pusher-js";
+import { useEffect, useRef, useState } from "react";
 import { Send } from "tabler-icons-react";
 import Layout from "../../components/Layout";
-import { ChatWindow, UserList } from "../../components/chat";
-import io from "socket.io-client";
 
 const useStyles = createStyles((theme) => ({
   send: {
@@ -42,19 +27,20 @@ const Chats = () => {
   const [chat, setChat] = useState([]);
 
   useEffect(async () => {
-    await fetch("/api/chat/socketio");
-    let socket = io();
-
-    socket.on("connect", () => {
-      console.log("SOCKET CONNECTED!", socket.id);
+    
+    const pusher = new Pusher('e6f3ef5def7a9cba57fc', {
+      cluster: 'ap1'
     });
 
-    socket.on("message", (message) => {
-      chat.push(message);
+    const channel = pusher.subscribe('chat');
+    channel.bind('chat-event', function(data) {
+      chat.push(data);
       setChat([...chat]);
     });
-    // disconnect
-    if (socket) return () => socket.disconnect();
+
+    return () => {
+      pusher.unsubscribe("chat");
+    };
   }, []);
 
   const sendMessage = async () => {
@@ -67,7 +53,7 @@ const Chats = () => {
       };
 
       // dispatch message to other users
-      const resp = await fetch("/api/chat/chat", {
+      const resp = await fetch("/api/chat/pusher", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -170,7 +156,7 @@ const Chats = () => {
                   className={classes.send}
                   placeholder="Type a message..."
                   rightSection={
-                    <ActionIcon>
+                    <ActionIcon onClick={sendMessage}>
                       <Send />
                     </ActionIcon>
                   }
@@ -181,6 +167,7 @@ const Chats = () => {
                   onKeyPress={(e) => {
                     if (e.key === "Enter") {
                       sendMessage();
+                      setMsg("");
                     }
                   }}
                 />
