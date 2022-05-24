@@ -125,11 +125,7 @@ const BlotterRecords = () => {
                     initialValues={initialValues}
                     child={<BlotterModal form={form}/>}
                   /> */}
-                  <Delete
-                    selectedID={selectedID}
-                    title="Blotter"
-                    endpoint="/api/blotter/deleteBlotter"
-                  />
+                
                 </Group>
 
                 <ReactTable
@@ -137,6 +133,14 @@ const BlotterRecords = () => {
                   cols={columns}
                   schema={schema}
                   setSelectedID={setSelectedID}
+                  selectedID={selectedID}
+                  deleteButton = {
+                    <Delete
+                    selectedID={selectedID}
+                    title="Blotter"
+                    endpoint="/api/blotter/deleteBlotter"
+                  />
+                  }
                 />
               </Card>
             </Grid.Col>
@@ -155,6 +159,14 @@ export async function getServerSideProps(context) {
     return {
       redirect: {
         destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+  if (session.user.user.roles !== "admin") {
+    return {
+      redirect: {
+        destination: "/",
         permanent: false,
       },
     };

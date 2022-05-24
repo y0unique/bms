@@ -41,12 +41,11 @@ const ResidentRecords = () => {
     residencyDate: "",
   };
 
-    
   const form = useForm({
     schema: zodResolver(schema),
     initialValues: initialValues,
-    });
- 
+  });
+
   const columns = [
     {
       Header: "Name",
@@ -100,7 +99,7 @@ const ResidentRecords = () => {
             schema={schema}
             title="Resident"
             endpoint="/api/resident/updateResident"
-            child={<ResidentModal form={form}/>}
+            child={<ResidentModal form={form} />}
           />
         );
       },
@@ -136,28 +135,29 @@ const ResidentRecords = () => {
               <Card>
                 <Title mb={6}>Resident Records</Title>
 
-                <Group>
-                  <Add
-                    title="Resident"
-                    schema={schema}
-                    form={form}
-                    endpoint="/api/resident/addResident"
-                    initialValues={initialValues}
-                    child={<ResidentModal form={form}/>}
-                  />
-                  <Delete
-                    selectedID={selectedID}
-                    title="Resident"
-                    endpoint="/api/resident/deleteResident"
-                  />
-                </Group>
-
                 <ReactTable
                   data={data}
                   cols={columns}
                   schema={schema}
                   setSelectedID={setSelectedID}
-                  
+         
+                  addButton={
+                    <Add
+                      title="Resident"
+                      schema={schema}
+                      form={form}
+                      endpoint="/api/resident/addResident"
+                      initialValues={initialValues}
+                      child={<ResidentModal form={form} />}
+                    />
+                  }
+                  deleteButton = {
+                    <Delete
+                    selectedID={selectedID}
+                    title="Resident"
+                    endpoint="/api/resident/deleteResident"
+                  />
+                  }
                 />
               </Card>
             </Grid.Col>
@@ -176,6 +176,14 @@ export async function getServerSideProps(context) {
     return {
       redirect: {
         destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+  if (session.user.user.roles !== "admin") {
+    return {
+      redirect: {
+        destination: "/",
         permanent: false,
       },
     };

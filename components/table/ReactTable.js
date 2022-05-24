@@ -24,7 +24,7 @@ const IndeterminateCheckbox = forwardRef(
    }
  )
 
-const ReactTable = ({ data, setSelectedID, schema, cols }) => {
+const ReactTable = ({ data, setSelectedID, selectedID, cols,  title, endpoint, addButton, deleteButton }) => {
 
 
   const pageCount = useMemo(() => Math.ceil(data.length / 10), [data]);
@@ -89,7 +89,7 @@ const ReactTable = ({ data, setSelectedID, schema, cols }) => {
   return (
     <>
      <ScrollArea>
-    <GlobalFilter setGlobalFilter={setGlobalFilter}  filter={globalFilter}/>
+    <GlobalFilter setGlobalFilter={setGlobalFilter}  filter={globalFilter} addButton={addButton} deleteButton={deleteButton}/>
       <Table {...getTableProps()}  highlightOnHover sx={{ minWidth: 800 }} >
         <thead>
           {headerGroups.map((headerGroup) => (
