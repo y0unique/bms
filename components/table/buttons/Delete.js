@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Button, Divider, Group, Modal, Text } from "@mantine/core";
+import { Button, ActionIcon, Group, Modal, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { Check } from "tabler-icons-react";
+import { Check, Trash } from "tabler-icons-react";
 
 const Delete = ({
   selectedID,
@@ -44,8 +44,14 @@ const Delete = ({
 
   return (
     <>
-      <Button onClick={() => setOpened(true)} variant="light" color="red">
-        Delete
+    <Button
+        onClick={() => setOpened(true)}
+        leftIcon={<Trash />}
+        radius="xl"
+        color="red"
+        variant="light"
+      >
+      Delete
       </Button>
       <Modal
         opened={opened}

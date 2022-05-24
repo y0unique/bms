@@ -36,12 +36,11 @@ const ActivityRecords = () => {
     how: "",
   };
 
-    
   const form = useForm({
     schema: zodResolver(schema),
     initialValues: initialValues,
-    });
- 
+  });
+
   const columns = [
     // {
     //   Header: "Name",
@@ -90,16 +89,14 @@ const ActivityRecords = () => {
       Cell: (props) => {
         // Convert strings to dates to render in modal
         props.row.original.birthdate = new Date(props.row.original.birthdate);
-        props.row.original.when = new Date(
-          props.row.original.when
-        );
+        props.row.original.when = new Date(props.row.original.when);
         return (
           <Edit
             data={props.row.original}
             schema={schema}
             title="Activity"
             endpoint="/api/activity/updateActivity"
-            child={<ActivityModal form={form}/>}
+            child={<ActivityModal form={form} />}
           />
         );
       },
@@ -135,27 +132,32 @@ const ActivityRecords = () => {
               <Card>
                 <Title mb={6}>Activity Records</Title>
 
-                <Group>
-                  <Add
-                    title="Activity"
-                    schema={schema}
-                    form={form}
-                    endpoint="/api/activity/addActivity"
-                    initialValues={initialValues}
-                    child={<ActivityModal form={form}/>}
-                  />
-                  <Delete
-                    selectedID={selectedID}
-                    title="Activity"
-                    endpoint="/api/activity/deleteActivity"
-                  />
-                </Group>
+                <Group></Group>
 
                 <ReactTable
                   data={data}
                   cols={columns}
                   schema={schema}
                   setSelectedID={setSelectedID}
+                  selectedID={selectedID}
+                 // TODO: Refactor and copy the same code below (addButton) and pass the component as an object
+                  addButton={
+                    <Add
+                      title="Activity"
+                      schema={schema}
+                      form={form}
+                      endpoint="/api/activity/addActivity"
+                      initialValues={initialValues}
+                      child={<ActivityModal form={form} />}
+                    />
+                  }
+                  deleteButton = {
+                    <Delete
+                    selectedID={selectedID}
+                    title="Activity"
+                    endpoint="/api/activity/deleteActivity" 
+                  />
+                  }
                 />
               </Card>
             </Grid.Col>
@@ -170,10 +172,19 @@ export default ActivityRecords;
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
+  console.log(session);
   if (!session) {
     return {
       redirect: {
         destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+  if (session.user.user.roles !== "admin") {
+    return {
+      redirect: {
+        destination: "/",
         permanent: false,
       },
     };

@@ -1,6 +1,8 @@
 import { TextInput, Group, ActionIcon } from "@mantine/core";
 import { Search, RotateClockwise, Check } from "tabler-icons-react";
-const GlobalFilter = ({ filter, setGlobalFilter }) => {
+import Delete from "../buttons/Delete";
+
+const GlobalFilter = ({ filter, setGlobalFilter, addButton, deleteButton }) => {
   // Create a handle for clearing the filter
   const handleClear = () => {
     setGlobalFilter("");
@@ -8,6 +10,8 @@ const GlobalFilter = ({ filter, setGlobalFilter }) => {
   return (
     // Create a search input
     <Group position="right" m={20}>
+      {addButton}
+      {deleteButton}
       <TextInput
         icon={<Search size={14} />}
         placeholder="Search"

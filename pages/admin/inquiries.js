@@ -1,4 +1,4 @@
-import { Card, Grid, Group, Text, Title, Badge  } from "@mantine/core";
+import { Card, Grid, Group, Text, Title, Badge } from "@mantine/core";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
@@ -20,10 +20,15 @@ const InquiriesRecords = () => {
   const [selectedID, setSelectedID] = useState("");
 
   const schema = z.object({
-    purpose:  z.enum(["Certificate", "Blotter"]),
+    purpose: z.enum(["Certificate", "Blotter"]),
     report: z.string().min(1, { message: "Report could not be empty" }),
     status: z.enum(["pending", "active"]),
-    type: z.enum(["Blotter","Barangay Certificate", "Certificate of Indigency", "Barangay ID"]),
+    type: z.enum([
+      "Blotter",
+      "Barangay Certificate",
+      "Certificate of Indigency",
+      "Barangay ID",
+    ]),
     dateInquired: z.date(),
   });
 
@@ -33,14 +38,13 @@ const InquiriesRecords = () => {
     status: "",
     type: "",
     dateInquired: "",
-    resident: ""
+    resident: "",
   };
 
   const form = useForm({
     schema: zodResolver(schema),
     initialValues: initialValues,
-    });
-
+  });
 
   const columns = [
     {
@@ -53,29 +57,27 @@ const InquiriesRecords = () => {
     },
     {
       Header: "Type",
-      accessor: "type"
+      accessor: "type",
     },
     {
       Header: "Status",
       accessor: "status",
-      Cell: (props) => {   
+      Cell: (props) => {
         if (props.row.original.status === "active") {
-          return <Badge color="green">{props.row.original.status}</Badge>
+          return <Badge color="green">{props.row.original.status}</Badge>;
+        } else if (props.row.original.status === "pending") {
+          return <Badge color="yellow">{props.row.original.status}</Badge>;
+        } else if (props.row.original.status === "inactive") {
+          return <Badge color="red">{props.row.original.status}</Badge>;
         }
-        else if  (props.row.original.status === "pending") {
-          return <Badge color="yellow">{props.row.original.status}</Badge>
-        }
-        else if  (props.row.original.status === "inactive") {
-          return <Badge color="red">{props.row.original.status}</Badge>
-        }
-        return <Badge>{props.row.original.status}</Badge>
-     },
+        return <Badge>{props.row.original.status}</Badge>;
+      },
     },
     {
       Header: "Date Inquired",
       accessor: "dateInquired",
-      Cell: (props) => {   
-         return moment(props.row.original.dateInquired).format("MM-DD-YYYY");
+      Cell: (props) => {
+        return moment(props.row.original.dateInquired).format("MM-DD-YYYY");
       },
     },
     {
@@ -83,7 +85,9 @@ const InquiriesRecords = () => {
       accessor: "action",
       Cell: (props) => {
         // Convert strings to dates to render in modal
-        props.row.original.dateInquired = new Date(props.row.original.dateInquired);
+        props.row.original.dateInquired = new Date(
+          props.row.original.dateInquired
+        );
         return (
           <Edit
             data={props.row.original}
@@ -135,11 +139,6 @@ const InquiriesRecords = () => {
                     form={form}
                     child={<InquiriesModal form={form} />}
                   /> */}
-                  <Delete
-                    selectedID={selectedID}
-                    title="Inquiries"
-                    endpoint="/api/inquiries/deleteInquiries"
-                  />
                 </Group>
 
                 <ReactTable
@@ -147,6 +146,13 @@ const InquiriesRecords = () => {
                   cols={columns}
                   schema={schema}
                   setSelectedID={setSelectedID}
+                  deleteButton={
+                    <Delete
+                      selectedID={selectedID}
+                      title="Inquiries"
+                      endpoint="/api/inquiries/deleteInquiries"
+                    />
+                  }
                 />
               </Card>
             </Grid.Col>
@@ -165,6 +171,14 @@ export async function getServerSideProps(context) {
     return {
       redirect: {
         destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+  if (session.user.user.roles !== "admin") {
+    return {
+      redirect: {
+        destination: "/",
         permanent: false,
       },
     };

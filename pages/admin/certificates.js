@@ -1,4 +1,4 @@
-import { Card, Grid, Group, Text, Title } from "@mantine/core";
+import { Card, Grid, Group, Text, Title, Button } from "@mantine/core";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
@@ -6,6 +6,7 @@ import useSWR from "swr";
 import moment from "moment";
 import { z } from "zod";
 import { useForm, zodResolver } from "@mantine/form";
+import { saveAs } from 'file-saver';
 
 import Layout from "../../components/Layout";
 import Add from "../../components/table/buttons/Add";
@@ -29,12 +30,11 @@ const CertificateRecords = () => {
     dateSubmitted: "",
   };
 
-    
   const form = useForm({
     schema: zodResolver(schema),
     initialValues: initialValues,
-    });
- 
+  });
+
   const columns = [
     // {
     //   Header: "Name",
@@ -70,18 +70,44 @@ const CertificateRecords = () => {
       accessor: "action",
       Cell: (props) => {
         // Convert strings to dates to render in modal
-        props.row.original.dateSubmitted = new Date(props.row.original.dateSubmitted);
+        props.row.original.dateSubmitted = new Date(
+          props.row.original.dateSubmitted
+        );
         props.row.original.dateSubmitted = new Date(
           props.row.original.dateSubmitted
         );
         return (
-          <Edit
-            data={props.row.original}
-            schema={schema}
-            title="Certificate"
-            endpoint="/api/certificate/updateCertificate"
-            child={<CertificateModal form={form}/>}
-          />
+          <>
+          <Group>
+            <Edit
+              data={props.row.original}
+              schema={schema}
+              title="Certificate"
+              endpoint="/api/certificate/updateCertificate"
+              child={<CertificateModal form={form} />}
+            />
+            <Button variant="outline" radius="xl" color="green" onClick={() => {
+              console.log(props.row.original)
+              fetch("/api/certificate/generatePDF", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(props.row.original),
+              })
+                .then((res) => res.json())
+                .then(  (data) => {
+                 console.log(data);
+                   fetch(data.url)
+                  .then(res => res.blob())
+                  .then((blob) => {
+                      saveAs(blob, 'CERTIFICATE.pdf');
+                  })
+
+                });
+            }} >Download</Button>
+          </Group>
+          </>
         );
       },
     },
@@ -125,11 +151,7 @@ const CertificateRecords = () => {
                     initialValues={initialValues}
                     child={<CertificateModal form={form}/>}
                   /> */}
-                  <Delete
-                    selectedID={selectedID}
-                    title="Certificate"
-                    endpoint="/api/certificate/deleteCertificate"
-                  />
+                
                 </Group>
 
                 <ReactTable
@@ -137,6 +159,14 @@ const CertificateRecords = () => {
                   cols={columns}
                   schema={schema}
                   setSelectedID={setSelectedID}
+                  deleteButton = {
+                    <Delete
+                    selectedID={selectedID}
+                    title="Certificate"
+                    endpoint="/api/certificate/deleteCertificate"
+                  />
+                  }
+
                 />
               </Card>
             </Grid.Col>
@@ -155,6 +185,14 @@ export async function getServerSideProps(context) {
     return {
       redirect: {
         destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+  if (session.user.user.roles !== "admin") {
+    return {
+      redirect: {
+        destination: "/",
         permanent: false,
       },
     };

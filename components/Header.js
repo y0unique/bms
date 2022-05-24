@@ -3,15 +3,18 @@ import {
   createStyles,
   Menu,
   Center,
-  Header,
+  Popover,
   Container,
   Group,
   Button,
   Burger,
+  Text,
+  ActionIcon,
 } from "@mantine/core";
-import { ChevronDown, Golf } from "tabler-icons-react";
+import { ChevronDown, Album, Bell } from "tabler-icons-react";
 import Link from "next/link";
 import { ThemeToggle } from "./ThemeToggle";
+import { useState } from "react";
 
 const links = [
   // {
@@ -103,6 +106,7 @@ const useStyles = createStyles((theme) => ({
 
 export function HeaderAction({ opened, toggleOpened }) {
   const { classes } = useStyles();
+  const [openNotif, setNotif] = useState(false);
 
   const items = links.map((link) => {
     const menuItems = link.links?.map((item) => (
@@ -153,18 +157,35 @@ export function HeaderAction({ opened, toggleOpened }) {
     <Container className={classes.inner} fluid>
       <Group>
         <Burger
-          opened={opened}
+          opened={openNotif}
           onClick={() => toggleOpened()}
           className={classes.burger}
           size="sm"
         />
       </Group>
-      <Group spacing={5} className={classes.links}>
-        {items}
-      </Group>
 
       <Group spacing={15}>
-      <ThemeToggle />
+        <Popover
+          opened={openNotif}
+          onClose={() => setNotif(false)}
+          target={
+            <ActionIcon onClick={() => setNotif((o) => !o)}>
+              <Bell />
+            </ActionIcon>
+          }
+          width={260}
+          position="bottom"
+        >
+          <div style={{ display: "flex" }}>
+            <ActionIcon mr="md">
+              <Album size={48} strokeWidth={2}  />
+            </ActionIcon>
+            <Text size="sm">
+              Thanks for stopping by and checking Mantine, you are awesome!
+            </Text>
+          </div>
+        </Popover>
+        <ThemeToggle />
       </Group>
     </Container>
   );
