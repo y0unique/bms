@@ -33,7 +33,12 @@ export default async (req, res) => {
                 console.log(result);
             }
         );
-        
+         // Find account in accounts collection
+         const accounts = db.collection("accounts");
+         const found = await accounts.findOne({
+             resident: ObjectId(req.body.resident._id)
+         });
+
         if (req.body.status == "active" && req.body.purpose == "Certificate") {
           
             const documents = db.collection("documents");
@@ -45,6 +50,15 @@ export default async (req, res) => {
                 type: req.body.type,
             });
             console.log(result);
+
+             // Send notification to resident
+             const notification = db.collection("notifications");
+             const result2 = await notification.insertOne({
+                 account: ObjectId(found._id),
+                 description: "Barangay Certificate has been issued.",
+                 read: false,
+                 createdDate: new Date(),
+             });
             return res.json(result)
         }
         if (req.body.status == "active" && req.body.purpose == "Blotter") {
@@ -57,6 +71,18 @@ export default async (req, res) => {
                 report: req.body.report,
             });
             console.log(result);
+           
+
+            // Send notification to resident
+            const notification = db.collection("notifications");
+            const result2 = await notification.insertOne({
+                account: ObjectId(found._id),
+                description: "You have a new blotter record.",
+                read: false,
+                createdDate: new Date(),
+            });
+          
+
             return res.json(result)
         }
 
