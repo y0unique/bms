@@ -36,7 +36,7 @@ const Index = () => {
                 </Card>
               </Grid.Col>
               
-              <Grid.Col md={6} lg={6}>
+              {/* <Grid.Col md={6} lg={6}>
                 <Card>
                   <Title align="center">Announcement</Title>
                   <Divider my="xs" />
@@ -75,7 +75,7 @@ const Index = () => {
                       <BarangayActivities />
                   </Text>
                 </Card>
-              </Grid.Col>
+              </Grid.Col> */}
 
               <Grid.Col md={12} lg={12}>
               

@@ -11,6 +11,7 @@ import {
   QuestionMark,
   Settings,
   Users,
+  User,
   BrandHipchat,
 } from "tabler-icons-react";
 // import { MantineLogo } from '../../shared/MantineLogo';
@@ -97,6 +98,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
 
 const data = [
   { link: "/", label: "Home", icon: Home },
+  { link: "/admin/userrecords", label: "User Records", icon: User },
   { link: "/admin/residentrecords", label: "Residents Records", icon: Users },
   { link: "/admin/blotterrecords", label: "Blotter Records", icon: Notes },
   { link: "/admin/certificates", label: "Certificates", icon: Certificate },
@@ -134,14 +136,14 @@ export function Sidebar() {
       <Navbar.Section grow>{links}</Navbar.Section>
 
       <Navbar.Section className={classes.footer}>
-        <a
+        {/* <a
           href="#"
           className={classes.link}
           onClick={(event) => event.preventDefault()}
         >
           <Settings className={classes.linkIcon} />
           <span>Settings</span>
-        </a>
+        </a> */}
 
         <a
           href="#"
