@@ -53,6 +53,7 @@ export default function TotalPopulation() {
     fetch("api/resident/getResidents")
         .then(res => res.json())
         .then(data => {
+          
             setResident(data);
         }
         );
@@ -60,8 +61,8 @@ export default function TotalPopulation() {
 
     //find all residents with Rental and Permanent residentialType
     const totalPermanent = residents.filter(resident => resident.residentialType === "Permanent").length;
-    const male =  residents.filter(item => item.gender.match("Male")).length;
-    const female  = residents.filter(item => item.gender.match("Female")).length;
+    const male =  residents.filter(item => item?.gender?.match("Male")).length;
+    const female  = residents.filter(item => item?.gender?.match("Female")).length;
     
 
     const stat = 
