@@ -23,6 +23,8 @@ export default async (req, res) => {
                 firstname: req.body.firstname,
                 middlename: req.body.middlename,
                 lastname: req.body.lastname,
+                email: req.body.email,
+                contactNum: req.body.contactNum,
                 birthdate: req.body.birthdate,
                 gender: req.body.gender,
                 residencyDate: req.body.residencyDate,

@@ -104,10 +104,11 @@ export function SidebarUser() {
       </Navbar.Section>
 
       <Navbar.Section className={classes.footer}>
-        {/* <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
+        <a href="/user/settings" className={classes.link} onClick={(event) => 
+          event.preventDefault()}>
           <Settings className={classes.linkIcon} />
           <span>Settings</span>
-        </a> */}
+        </a>
 
         <a href="#" className={classes.link} onClick={(event) => {
           event.preventDefault(); 

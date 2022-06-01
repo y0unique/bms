@@ -26,6 +26,20 @@ const ResidentModal = ({form}) => {
           ></TextInput>
         </Grid.Col>
 
+        <Grid.Col span={6}>
+          <TextInput
+            label="Email"
+            {...form.getInputProps("email")}
+          ></TextInput>
+        </Grid.Col>
+
+        <Grid.Col span={6}>
+          <TextInput
+            label="Contact Number"
+            {...form.getInputProps("contactNum")}
+          ></TextInput>
+        </Grid.Col>
+
         <Grid.Col span={12}>
           <TextInput
             label="Address"
