@@ -1,5 +1,6 @@
 import clientPromise from "../../../lib/mongodb";
 import { getSession } from "next-auth/react";
+import {sendEmail} from "../email/sendEmail";
 var ObjectId = require('mongodb').ObjectId;
 
 export default async (req, res) => {
@@ -49,8 +50,9 @@ export default async (req, res) => {
                 resident: ObjectId(req.body.resident._id),
                 type: req.body.type,
             });
-            console.log(result);
-
+           
+            // Send email to resident
+            sendEmail(req.body.resident.email, "Document Issued", "You have successfully issued a document.");
              // Send notification to resident
              const notification = db.collection("notifications");
              const result2 = await notification.insertOne({

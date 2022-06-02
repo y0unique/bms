@@ -104,7 +104,19 @@ export function SidebarUser() {
       </Navbar.Section>
 
       <Navbar.Section className={classes.footer}>
-        {/* <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
+        <Link href="/user/settings">
+          <Anchor
+            className={classes.link}
+            component="a"
+            underline={false}
+          >
+            <Settings className={classes.linkIcon} />
+            <span>Settings</span>
+          </Anchor>
+        </Link>
+        
+        {/* <a href="/user/settings" className={classes.link} onClick={(event) => 
+          event.preventDefault()}>
           <Settings className={classes.linkIcon} />
           <span>Settings</span>
         </a> */}

@@ -18,6 +18,8 @@ export default async (req, res) => {
         if (
             req.body.firstname === "" ||
             req.body.lastname === "" ||
+            req.body.email === "" ||
+            req.body.contactNum === "" ||
             req.body.residentialType === "" ||
             req.body.address === "" || 
             req.body.birthdate === "" ||
@@ -32,6 +34,8 @@ export default async (req, res) => {
             firstname: req.body.firstname,
             middlename: req.body.middlename,    
             lastname: req.body.lastname,
+            email: req.body.email,
+            contactNum: req.body.contactNum,
             residentialType: req.body.residentialType,
             address: req.body.address,
             birthdate: req.body.birthdate,
