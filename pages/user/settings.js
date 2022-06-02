@@ -78,7 +78,7 @@ const Setting = ({resident}) => {
             <Grid.Col span={12}>
               <Card>
                 <Group spacing={"10px"}>
-                  <Title mb={6}>Settings</Title>
+                  <Title mb={6}>Acccount Settings</Title>
                   <ActionIcon>
                     <Settings size={60} strokeWidth={2} />
                   </ActionIcon>
