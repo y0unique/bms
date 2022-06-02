@@ -32,7 +32,7 @@ const ResidentModal = ({form, disabled}) => {
         <Grid.Col span={6}>
           <TextInput
             label="Email"
-          
+
             {...form.getInputProps("email")}
           ></TextInput>
         </Grid.Col>
@@ -40,7 +40,6 @@ const ResidentModal = ({form, disabled}) => {
         <Grid.Col span={6}>
           <TextInput
             label="Contact Number"
-  
             {...form.getInputProps("contactNum")}
           ></TextInput>
         </Grid.Col>
