@@ -1,5 +1,5 @@
 # Barangay Management System
-
+## Live Demo: https://bms-sage.vercel.app/
 ## Configuration
 
 ### Step 1. Get the connection string of your MongoDB server
